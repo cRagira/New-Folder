@@ -1,0 +1,11 @@
+{% load static %}
+
+{% block content %}
+    {% for bet in bets %}
+        <div>
+            <a href="{% url 'main:bet-detail' bet.id %}">
+              {{bet}} - {{bet.stake_amount}} - {{bet.prize}}
+            </a>
+        </div>
+    {%endfor%}
+{% endblock content %}

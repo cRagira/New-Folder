@@ -1,0 +1,174 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>bet</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <script src="https://kit.fontawesome.com/d48fb8605a.js" crossorigin="anonymous" defer></script>
+
+</head>
+
+<body class="light">
+
+    <div class="mybets">
+        <div><a href="/"><i class="fa-solid fa-house"></i></a></div>
+        <div class="betslip-icon" id="betslip-icon"><i class="fa-solid fa-file"></i></div>
+        <div><i class="fa-solid fa-user"></i></div>
+    </div>
+
+    <form method="post">
+        {%csrf_token%}
+        {% for match in matches %}
+
+        <div class="container">
+            <span class="time">{{match.time|date:"M d, h:i a"}}</span>
+            <div class="content">
+                <div class="teams">
+                    <p>{{match.home}} </p>
+                    <p>{{match.away}}</p>
+                </div>
+                <div class="odds">
+                    <div class="odds_select">
+                        <label>
+                            <input type="checkbox" class="radioCheck" name="{{match.match_id}}" id="{{match.home}}"
+                                value="home" onclick="updateChecked(this)">
+                            <span>{{match.home_odds}}</span>
+                        </label>
+                    </div>
+                    <div class="odds_select">
+                        <label>
+                            <input type="checkbox" class="radioCheck" name="{{match.match_id}}" id="{{match.home}}-draw"
+                                value="draw" onclick="updateChecked(this)">
+                            <span>{{match.draw_odds}}</span>
+                        </label>
+                    </div>
+                    <div class="odds_select">
+                        <label>
+                            <input type="checkbox" class="radioCheck" name="{{match.match_id}}" id="{{match.away}}"
+                                value="away" onclick="updateChecked(this)">
+                            <span>{{match.away_odds}}</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <br>
+        </div>
+        {% endfor %}
+        <div class="betslip" id="betslip">
+            <p>Please make a selection</p>
+
+
+        </div>
+        <hr>
+        <div class="bet-amount">
+            <div class="inline"><span>Balance</span>
+                <p class="account-balance">KES 0</p>
+            </div>
+            <div class="inline"><span>Total Odds</span>
+                <p class="total-odds">KES 0</p>
+            </div>
+            <div class="inline"><span>Payout</span>
+                <p class="payout">KES 0</p>
+            </div>
+            <input class="amount" type="number" name="amount" id="amount" placeholder="Amount &emsp; " value="100">
+            <input type="submit" value="place bet">
+        </div>
+
+    </form>
+    <div class="betslip-container hidden" id="betslip-container">
+        <div class="slip-teams">
+            <i class="fa fa-remove" onclick="removeMatch(this)"></i>
+            <div class="team-details">
+                <p></p>
+                <span class="pick"></span>
+                <span class="time2"></span>
+            </div>
+        </div>
+        <div class="slip-odds">
+
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+    <script>
+        function updateBetslip() {
+            var checked = document.querySelectorAll("input[type=checkbox]:checked");
+            var betslipicon = document.getElementsByClassName('betslip-icon')[0]
+            var odds = 1.0
+            var betslip = document.getElementById('betslip')
+            $("#betslip").empty()
+            betslipicon.innerHTML = `<i class="fa-solid fa-file"></i>`;
+            checked.forEach(check => {
+                var odd = parseFloat(check.nextElementSibling.innerHTML)
+                var home = check.parentElement.parentElement.parentElement.previousElementSibling.children[0].textContent
+                var away = check.parentElement.parentElement.parentElement.previousElementSibling.children[1].textContent
+                var pick = check.value
+                var time = check.parentElement.parentElement.parentElement.parentElement.previousElementSibling.textContent
+                var name = check.name
+                odds = odds * odd
+                var emptyEl = document.getElementById('betslip-container').cloneNode(true)
+                emptyEl.setAttribute('id', name)
+                emptyEl.classList.remove("hidden")
+                emptyEl.children[1].innerHTML = odd
+                emptyEl.children[0].children[1].children[0].innerHTML = home + ' Vs ' + away
+                emptyEl.children[0].children[1].children[1].innerHTML = pick
+                emptyEl.children[0].children[1].children[2].innerHTML = time
+                betslip.append(emptyEl)
+                var hzRule = document.createElement('hr');// make a hr
+                betslip.appendChild(hzRule)
+            });
+            var totalOdds = document.getElementsByClassName('total-odds')[0]
+            totalOdds.innerHTML = odds.toFixed(2)
+            var payout = document.getElementsByClassName('payout')[0]
+            var amount = document.getElementsByClassName('amount')[0].value
+
+            payout.innerHTML = "Kes " + (odds * amount).toFixed(2).toString()
+
+            if (checked.length > 0) {
+                console.log(checked.length)
+                betslipicon.innerHTML = `<div class='odds'><i>${checked.length}:</i><i> \n ${odds.toFixed(2)}</i></div>`;
+
+            }
+            else {
+                console.log('000')
+                betslipicon.innerHTML = `<i class="fa-solid fa-file"></i>`;
+            }
+        }
+        function updateChecked(element) {
+            var $box = $(element);
+            if ($box.is(":checked")) {
+                // the name of the box is retrieved using the .attr() method
+                // as it is assumed and expected to be immutable
+                var group = "input:checkbox[name='" + $box.attr("name") + "']";
+                // the checked state of the group/box on the other hand will change
+                // and the current value is retrieved using .prop() method
+                $(group).prop("checked", false);
+                $(group).parent().parent().css("background-color", "#e8e8e8")
+
+                $box.prop("checked", true);
+                $box.parent().parent().css("background-color", "#fed800")
+            } else {
+                $box.prop("checked", false);
+                $box.parent().parent().css("background-color", "#e8e8e8")
+
+            }
+            updateBetslip()
+        }
+        function removeMatch(element) {
+            matchId = element.parentElement.parentElement.id
+            match = document.getElementsByName(matchId)
+            match.forEach(choice => {
+                choice.checked = false
+            });
+            updateBetslip()
+        }
+    </script>
+
+</body>
+
+</html>

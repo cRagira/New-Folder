@@ -1,0 +1,8 @@
+{
+    "livePreview.defaultPreviewPath": "/main/x.html",
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter"
+    },
+    "python.formatting.provider": "none",
+    "python.analysis.typeCheckingMode": "basic"
+}

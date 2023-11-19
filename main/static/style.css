@@ -1,0 +1,181 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500&display=swap');
+*{
+    font-family: 'Montserrat', Helvetica, sans-serif;
+    box-sizing: border-box;
+}
+.light{
+    background-color: white;
+}
+.light .odds_select{
+    background-color: #e8e8e8;
+}
+.light .mybets{
+    background-color: white;
+}
+.dark{
+    background-color: black;
+}
+.dark .odds_select{
+    background-color: grey;
+}
+
+p{
+    margin: 2px 0;
+    font-weight: 500;
+}
+.time{
+    font-size: .7rem;
+    align-self: flex-end;
+    color: gray;
+}
+.amount{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.container{
+    display: flex;
+    flex-direction: column;
+}
+.content{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.teams{
+    width: 40%;
+}
+.odds{
+    display: flex;
+    gap: 5%;
+    width: 60%;
+    justify-content: space-between;
+}
+.odds_select{
+    width: 30%;
+    display: flex;
+    justify-content: center;
+    border-radius: 20px;
+    padding: 6px 0;
+}
+.odds .odds_select label{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+.odds .odds_select label input{
+    display: none;
+}
+.odds .odds_select label span{
+    background-color: inherit;
+}
+.odds .odds_select label input[type='checkbox']:checked ~ span{
+    background: #fed800;
+}
+.mybets{
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    box-shadow: -7px -7px 12px #e6e6e6,
+    7px 7px 12px #ffffff;
+    width: 100%;
+    height: 3rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    font-size: 1.7rem;
+
+}
+
+.betslip-icon{
+    height: 4rem;
+    width: 4rem;
+    background-color: #fed800;
+    border-radius: 50%;
+    display: grid;
+}
+.betslip-icon i{
+    align-self: center;
+    justify-self: center;
+    font-style: normal;
+}
+.betslip-icon .odds{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    justify-self: center;
+    font-size: 1rem;
+}
+.betslip{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: column;
+
+}
+.betslip-container{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+.slip-teams{
+    display: flex;
+    align-items: center;
+}
+.slip-teams i{
+    padding: 1rem;
+    color: red;
+    cursor: pointer;
+}
+.team-details{
+    display: flex;
+    flex-direction: column;
+}
+.team-details span{
+    font-size: .8rem;
+    color: gray;
+    padding-top: 5px;
+}
+.slip-odds{
+    padding: 0 1rem;
+}
+.inline{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+.inline span{
+    color: gray;
+}
+.bet-amount{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.bet-amount input{
+    padding: 15px 0;
+    margin: 5px;
+    width: 100%;
+    border: none;
+    border-radius: 5px;
+}
+.bet-amount input[type=number]{
+    background-color: #e8e8e8;
+    text-align: right;
+    padding-right: 1rem;
+}
+.bet-amount input[type=submit]{
+    background-color: #fed800;
+    font-style: normal;
+}
+.slip-content{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
