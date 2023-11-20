@@ -110,11 +110,12 @@ class Match(models.Model):
         verbose_name_plural = 'Matches'
 
     match_id = models.CharField(max_length=100, primary_key=True)
-    title = models.CharField(max_length=50)
-    home = models.CharField(max_length=50)
-    away = models.CharField(max_length=50)
+    title = models.CharField(max_length=100)
+    home = models.CharField(max_length=100)
+    away = models.CharField(max_length=100)
     time = models.DateTimeField()
-    stage = models.CharField(max_length=5, choices=stageChoices.choices, default=stageChoices.SCHEDULED)
+    stage = models.CharField(max_length=10, choices=stageChoices.choices, default=stageChoices.SCHEDULED)
+    #TODO fix other outcomes
     home_odds = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True)
     draw_odds = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True)
     away_odds = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True)

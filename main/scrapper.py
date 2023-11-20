@@ -136,6 +136,7 @@ def fetch_matches():
 
         # matches = (json.dumps(data))
         for match in data:
+            print(match['stage'])
             instance = Match.objects.filter(match_id=match['match_id']).first()
             if instance:
                 instance.home_odds=match['home_odds']

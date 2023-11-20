@@ -1,16 +1,17 @@
 from django.shortcuts import render, HttpResponse
 from django.contrib.auth.decorators import login_required
-from .models import Match, BetTicket,BetTicketSelection
+from .models import Match, BetTicket,BetTicketSelection, get_currency
+from djmoney.money import Money
 import json
+
 
 # Create your views here.
 def home(request):
     if request.method == 'POST':
         dict = request.POST.dict()
         dict.pop('csrfmiddlewaretoken')
-
         amount = int(dict.pop('amount'))
-        if request.user.profile.balance > amount:
+        if request.user.profile.balance > Money(amount,get_currency(request.user.profile.country.alpha3)):
             bet = BetTicket.objects.create(user=request.user, stake_amount=amount, total_odds=1, prize=100)
             total_odds = 1
 
@@ -32,6 +33,9 @@ def home(request):
             bet.prize=amount*total_odds
             bet.save()
             request.user.profile.debit(amount)
+
+        else:
+            print('balance insuffivient')
 
     matches = Match.objects.filter(stage='sche')
     
