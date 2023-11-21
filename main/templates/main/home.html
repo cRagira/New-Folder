@@ -14,71 +14,87 @@
 
 <body class="light">
 
-    <div class="mybets">
-        <div><a href="/"><i class="fa-solid fa-house"></i></a></div>
-        <div class="betslip-icon" id="betslip-icon"><i class="fa-solid fa-file"></i></div>
-        <div><i class="fa-solid fa-user"></i></div>
+    <div class="navbar">
+        <div><a href="/"><i class="fa-solid fa-house" onclick="makeActive('#games')"></i></a></div>
+        <div class="betslip-icon" id="betslip-icon" onclick="makeActive('#slip')"><i class="fa-solid fa-file"></i></div>
+        <div><i class="fa-solid fa-user" onclick="makeActive('#account')"></i></div>
     </div>
+    <div class="home" id="home">
+        <div>
+            <p>current balance: {{user.profile.balance}}</p>
+        </div>
+        <form method="post">
+            {%csrf_token%}
+            <div class="games nav" id="games">
+                {% for match in matches %}
 
-    <form method="post">
-        {%csrf_token%}
-        {% for match in matches %}
-
-        <div class="container">
-            <span class="time">{{match.time|date:"M d, h:i a"}}</span>
-            <div class="content">
-                <div class="teams">
-                    <p>{{match.home}} </p>
-                    <p>{{match.away}}</p>
+                <div class="container">
+                    <span class="time">{{match.time|date:"M d, h:i a"}}</span>
+                    <div class="content">
+                        <div class="teams">
+                            <p>{{match.home}} </p>
+                            <p>{{match.away}}</p>
+                        </div>
+                        <div class="odds">
+                            <div class="odds_select">
+                                <label>
+                                    <input type="checkbox" class="radioCheck" name="{{match.match_id}}"
+                                        id="{{match.home}}" value="home" onclick="updateChecked(this)">
+                                    <span>{{match.home_odds}}</span>
+                                </label>
+                            </div>
+                            <div class="odds_select">
+                                <label>
+                                    <input type="checkbox" class="radioCheck" name="{{match.match_id}}"
+                                        id="{{match.home}}-draw" value="draw" onclick="updateChecked(this)">
+                                    <span>{{match.draw_odds}}</span>
+                                </label>
+                            </div>
+                            <div class="odds_select">
+                                <label>
+                                    <input type="checkbox" class="radioCheck" name="{{match.match_id}}"
+                                        id="{{match.away}}" value="away" onclick="updateChecked(this)">
+                                    <span>{{match.away_odds}}</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
                 </div>
-                <div class="odds">
-                    <div class="odds_select">
-                        <label>
-                            <input type="checkbox" class="radioCheck" name="{{match.match_id}}" id="{{match.home}}"
-                                value="home" onclick="updateChecked(this)">
-                            <span>{{match.home_odds}}</span>
-                        </label>
+                {% endfor %}
+            </div>
+            <div class="slip nav hidden" id="slip">
+                <div class="betslip" id="betslip">
+                    <p>Please make a selection</p>
+
+
+                </div>
+                <hr>
+                <div class="bet-amount">
+                    <div class="inline"><span>Balance</span>
+                        <p class="account-balance">{{user.profile.balance}}</p>
                     </div>
-                    <div class="odds_select">
-                        <label>
-                            <input type="checkbox" class="radioCheck" name="{{match.match_id}}" id="{{match.home}}-draw"
-                                value="draw" onclick="updateChecked(this)">
-                            <span>{{match.draw_odds}}</span>
-                        </label>
+                    <div class="inline"><span>Total Odds</span>
+                        <p class="total-odds"> 0</p>
                     </div>
-                    <div class="odds_select">
-                        <label>
-                            <input type="checkbox" class="radioCheck" name="{{match.match_id}}" id="{{match.away}}"
-                                value="away" onclick="updateChecked(this)">
-                            <span>{{match.away_odds}}</span>
-                        </label>
+                    <div class="inline"><span>Payout</span>
+                        <p class="payout"> 0</p>
                     </div>
+                    <div class="wrapper">
+                        <input class="amount" type="number" name="amount" id="amount" value="100"
+                            onkeyup="updateBetslip()">
+                        <div class="placeholder">Amount</div>
+                    </div>
+
+                    <input type="submit" value="place bet">
                 </div>
             </div>
-            <br>
-        </div>
-        {% endfor %}
-        <div class="betslip" id="betslip">
-            <p>Please make a selection</p>
 
-
-        </div>
-        <hr>
-        <div class="bet-amount">
-            <div class="inline"><span>Balance</span>
-                <p class="account-balance">KES 0</p>
-            </div>
-            <div class="inline"><span>Total Odds</span>
-                <p class="total-odds">KES 0</p>
-            </div>
-            <div class="inline"><span>Payout</span>
-                <p class="payout">KES 0</p>
-            </div>
-            <input class="amount" type="number" name="amount" id="amount" placeholder="Amount &emsp; " value="100">
-            <input type="submit" value="place bet">
-        </div>
-
-    </form>
+        </form>
+    </div>
+    <div class="account nav hidden" id="account">
+        account
+    </div>
     <div class="betslip-container hidden" id="betslip-container">
         <div class="slip-teams">
             <i class="fa fa-remove" onclick="removeMatch(this)"></i>
@@ -120,22 +136,20 @@
                 emptyEl.children[0].children[1].children[2].innerHTML = time
                 betslip.append(emptyEl)
                 var hzRule = document.createElement('hr');// make a hr
-                betslip.appendChild(hzRule)
+                betslip.append(hzRule)
             });
             var totalOdds = document.getElementsByClassName('total-odds')[0]
             totalOdds.innerHTML = odds.toFixed(2)
             var payout = document.getElementsByClassName('payout')[0]
             var amount = document.getElementsByClassName('amount')[0].value
 
-            payout.innerHTML = "Kes " + (odds * amount).toFixed(2).toString()
+            payout.innerHTML = "{{user.profile.user_currency}} " + (odds * amount).toFixed(2).toString()
 
             if (checked.length > 0) {
-                console.log(checked.length)
                 betslipicon.innerHTML = `<div class='odds'><i>${checked.length}:</i><i> \n ${odds.toFixed(2)}</i></div>`;
 
             }
             else {
-                console.log('000')
                 betslipicon.innerHTML = `<i class="fa-solid fa-file"></i>`;
             }
         }
@@ -166,6 +180,24 @@
                 choice.checked = false
             });
             updateBetslip()
+        }
+        function makeActive(id) {
+            $element = $(id)
+            $navs = $('.nav')
+            console.log($element.attr('id'))
+            $navs.each(function () {
+                console.log($(this).attr('id'))
+                if ($(this).attr('id') != $element.attr('id')) {
+                    $(this).addClass('hidden')
+                }
+                else {
+                    $(this).removeClass('hidden')
+                    console.log($element.attr('id') + 'matches')
+                }
+            })
+
+
+                ;
         }
     </script>
 

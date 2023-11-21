@@ -9,6 +9,7 @@ import json
 def home(request):
     if request.method == 'POST':
         dict = request.POST.dict()
+        print(dict)
         dict.pop('csrfmiddlewaretoken')
         amount = int(dict.pop('amount'))
         if request.user.profile.balance > Money(amount,get_currency(request.user.profile.country.alpha3)):
@@ -17,7 +18,6 @@ def home(request):
 
             for key,value in dict.items():
                 match = Match.objects.get(match_id=key)
-                print(value)
                 if value == 'home':
                     odds = match.home_odds
                 elif value == 'draw':
@@ -36,10 +36,10 @@ def home(request):
 
         else:
             print('balance insuffivient')
-
+    user=request.user
     matches = Match.objects.filter(stage='sche')
     
-    return render(request, "main/home.html" ,context={"matches":matches})
+    return render(request, "main/home.html" ,context={"matches":matches,"user":user})
 
 
 @login_required

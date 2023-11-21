@@ -84,6 +84,10 @@ class Profile(models.Model):
         transaction=Transaction.objects.create(user=self.user,type='with',amount=Money(amount,get_currency(self.country.alpha3)))
         transaction.save()
 
+    def user_currency(self):
+        currency=get_currency(self.country.alpha3)
+        return currency
+
     def __str__(self):
         return str(self.user)
       

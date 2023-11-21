@@ -1,87 +1,108 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500&display=swap');
-*{
+
+* {
     font-family: 'Montserrat', Helvetica, sans-serif;
     box-sizing: border-box;
 }
-.light{
+
+.light {
     background-color: white;
 }
-.light .odds_select{
+
+.light .odds_select {
     background-color: #e8e8e8;
 }
-.light .mybets{
+
+.light .navbar {
     background-color: white;
 }
-.dark{
+
+.dark {
     background-color: black;
 }
-.dark .odds_select{
+
+.dark .odds_select {
     background-color: grey;
 }
 
-p{
+p {
     margin: 2px 0;
     font-weight: 500;
 }
-.time{
+
+.time {
     font-size: .7rem;
     align-self: flex-end;
     color: gray;
 }
-.amount{
+
+.amount {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 }
-.container{
+
+.container {
     display: flex;
     flex-direction: column;
 }
-.content{
+
+.games {
+    margin-bottom: 3rem;
+}
+
+.content {
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
-.teams{
+.teams {
     width: 40%;
 }
-.odds{
+
+.odds {
     display: flex;
     gap: 5%;
     width: 60%;
     justify-content: space-between;
 }
-.odds_select{
+
+.odds_select {
     width: 30%;
     display: flex;
     justify-content: center;
     border-radius: 20px;
     padding: 6px 0;
 }
-.odds .odds_select label{
+
+.odds .odds_select label {
     width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
 }
-.odds .odds_select label input{
+
+.odds .odds_select label input {
     display: none;
 }
-.odds .odds_select label span{
+
+.odds .odds_select label span {
     background-color: inherit;
 }
-.odds .odds_select label input[type='checkbox']:checked ~ span{
+
+.odds .odds_select label input[type='checkbox']:checked~span {
     background: #fed800;
 }
-.mybets{
+
+.navbar {
     position: fixed;
     left: 0;
     bottom: 0;
     box-shadow: -7px -7px 12px #e6e6e6,
-    7px 7px 12px #ffffff;
+        7px 7px 12px #ffffff;
     width: 100%;
     height: 3rem;
     display: flex;
@@ -89,93 +110,132 @@ p{
     justify-content: space-around;
     align-items: center;
     font-size: 1.7rem;
+    z-index: 1;
 
 }
 
-.betslip-icon{
+.betslip-icon {
     height: 4rem;
     width: 4rem;
     background-color: #fed800;
     border-radius: 50%;
     display: grid;
 }
-.betslip-icon i{
+
+.betslip-icon i {
     align-self: center;
     justify-self: center;
     font-style: normal;
 }
-.betslip-icon .odds{
+
+.betslip-icon .odds {
     display: flex;
     flex-direction: column;
     justify-content: center;
     justify-self: center;
     font-size: 1rem;
 }
-.betslip{
+
+.betslip {
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-direction: column;
 
 }
-.betslip-container{
+
+.betslip-container {
     width: 100%;
     display: flex;
     justify-content: space-between;
 }
-.slip-teams{
+
+.slip-teams {
     display: flex;
     align-items: center;
 }
-.slip-teams i{
+
+.slip-teams i {
     padding: 1rem;
     color: red;
     cursor: pointer;
 }
-.team-details{
+
+.team-details {
     display: flex;
     flex-direction: column;
 }
-.team-details span{
+
+.team-details span {
     font-size: .8rem;
     color: gray;
     padding-top: 5px;
 }
-.slip-odds{
+
+.slip-odds {
     padding: 0 1rem;
 }
-.inline{
+
+.inline {
     width: 100%;
     display: flex;
     justify-content: space-between;
 }
-.inline span{
+
+.inline span {
     color: gray;
 }
-.bet-amount{
+
+.bet-amount {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    padding-bottom: 3rem;
 }
-.bet-amount input{
+
+.bet-amount input {
     padding: 15px 0;
     margin: 5px;
     width: 100%;
     border: none;
     border-radius: 5px;
 }
-.bet-amount input[type=number]{
+
+.bet-amount input[type=number] {
     background-color: #e8e8e8;
     text-align: right;
     padding-right: 1rem;
 }
-.bet-amount input[type=submit]{
+
+.bet-amount input[type=submit] {
     background-color: #fed800;
     font-style: normal;
 }
-.slip-content{
+
+.slip-content {
     display: flex;
     width: 100%;
     justify-content: space-between;
+}
+
+.hidden {
+    display: none;
+}
+.wrapper {
+    position: relative;
+    width: 100%;
+  }
+.placeholder {
+    position: absolute;
+    right: 4px;
+    padding-left: 2rem;
+    top: 1rem;
+    pointer-events: none;
+    width: 100%;    
+}
+
+.input:placeholder-shown+.placeholder {
+    /* if real placeholder is shown - hide fake placeholder */
+    opacity: 0;
 }
