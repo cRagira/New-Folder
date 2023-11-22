@@ -16,7 +16,8 @@ def fetch_matches():
 
     url = 'https://flashscore.co.ke'
 
-    # options.add_argument("--headless")
+    options.add_argument("--start-maximized")
+    options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("user-data-dir=selenium")
@@ -27,12 +28,17 @@ def fetch_matches():
     time.sleep(10)
     p=driver.find_element(By.CLASS_NAME,'header__text')
     if p:
-            
-        menu = driver.find_element(By.XPATH, '//*[@id="user-menu"]')
-        menu.click()
-        time.sleep(2)
-        # cookies = driver.find_element(By.XPATH, '//*[@id="onetrust-accept-btn-handler"]')
-        # cookies.click()
+        try:
+            logged=driver.find_element(By.XPATH, '//*[@class="header__text header__text--user header__text--loggedIn"]')
+        except Exception:
+            menu = driver.find_element(By.XPATH, '//*[@id="user-menu"]')
+            menu.click()
+            time.sleep(2)
+        try:
+            cookies = driver.find_element(By.XPATH, '//*[@id="onetrust-accept-btn-handler"]')
+            cookies.click()
+        except Exception:
+            pass
         try:
             email_login = driver.find_element(By.XPATH,'//button[@class="ui-button ui-formButton social__button email"]')
             scroll_origin = ScrollOrigin.from_element(email_login)
@@ -57,7 +63,7 @@ def fetch_matches():
     oddbtn.click()
     time.sleep(5)
 
-    def collectdata():
+    def collectdata(date):
         html = driver.page_source
         time.sleep(5)
 
@@ -114,7 +120,7 @@ def fetch_matches():
                         if 'event__match--scheduled' in child.attrs['class']:
                             stage = 'sche'
 
-                            event_time = f"{datetime.datetime.today().date()} {child.find('div',class_='event__time').get_text()[:5]}:00.000000+03:00"
+                            event_time = f"{date} {child.find('div',class_='event__time').get_text()[:5]}:00.000000+03:00"
                         elif 'event__match--live' in child.attrs['class']:
                             stage = 'li'
                             home_score = int(child.find('div',class_='event__score--home').get_text())
@@ -170,7 +176,7 @@ def fetch_matches():
             with open('x.json', 'w') as file:
                 file.write(json.dumps(data))
 
-    collectdata()
+    collectdata(datetime.datetime.today().date())
 
     t=datetime.datetime.now()
     if int(t.strftime('%M'))<10:
@@ -179,7 +185,7 @@ def fetch_matches():
         tomorrow.click()
         time.sleep(5)
 
-        collectdata()
+        collectdata((datetime.date.today() + datetime.timedelta(days=1)))
 
 
 
