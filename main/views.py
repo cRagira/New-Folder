@@ -7,6 +7,7 @@ import json
 
 # Create your views here.
 def home(request):
+    print(request.META)
     if request.method == "POST":
         dict = request.POST.dict()
         print(dict)

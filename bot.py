@@ -35,7 +35,7 @@ def send_welcome(message):
     if user:
         keyboard = telebot.types.InlineKeyboardMarkup()
         keyboard.row(
-            telebot.types.InlineKeyboardButton("Open App", web_app=types.WebAppInfo('https://t.me/surebet_bot/Bet'))
+            telebot.types.InlineKeyboardButton("Open App", web_app=types.WebAppInfo('https://new-folder-production.up.railway.app/'))
         )
         message = bot.send_message(
             message.chat.id,
