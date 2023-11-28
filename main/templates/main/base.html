@@ -14,7 +14,9 @@
 </head>
 
 <body>
-    <div class="tg" id="tg"></div>
+    <div class="tg" id="tg">tg <script>var data=Telegram.WebApp.InitData;
+        t=document.getElementById('tg');
+        t.innerText=data</script></div>
     {% if request.user.is_authenticated %}
     {% block content %}
     {% endblock content %}

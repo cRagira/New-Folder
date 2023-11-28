@@ -1,10 +1,3 @@
-Telegram.WebApp.Ready()
-Telegram.WebApp.Expand()
-initData=Telegram.WebApp.initData
-initDataUnsafe=Telegram.WebApp.InitDataUnsafe
-tg=document.getElementById('tg')
-tg.innerHTML=(initData+" "+initDataUnsafe)
-
 
 
 function updateBetslip() {
