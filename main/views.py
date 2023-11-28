@@ -7,7 +7,6 @@ import json
 
 # Create your views here.
 def home(request):
-    print(request.META)
     if request.method == "POST":
         dict = request.POST.dict()
         print(dict)
@@ -45,9 +44,8 @@ def home(request):
             print("balance insuffivient")
     user = request.user
     matches = Match.objects.filter(stage="sche")
-    currency=user.profile.user_currency
 
-    return render(request, "main/home.html", context={"matches": matches, "user": user,"currency":currency})
+    return render(request, "main/home.html", context={"matches": matches, "user": user})
 
 
 @login_required
