@@ -1,4 +1,5 @@
-
+Telegram.WebApp.ready()
+Telegram.WebApp.expand()
 
 function updateBetslip() {
     var checked = document.querySelectorAll("input[type=checkbox]:checked");
