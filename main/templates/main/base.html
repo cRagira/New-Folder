@@ -22,7 +22,7 @@
     {% endif %}
     <script  type="text/javascript">
         var currency="{{user.profile.user_currency}}";
-        var data=Telegram.WebApp.InitData;
+        var data=window.Telegram.WebApp.initData;
         var t=document.getElementById('tg');
         t.innerText='data'+data;
         </script>
