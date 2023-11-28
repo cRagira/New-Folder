@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'main',
     'djmoney',
+    'django_countries',
     'djmoney.contrib.exchange',
 ]
 
@@ -79,11 +80,11 @@ WSGI_APPLICATION = 'bet.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': BASE_DIR / 'db.sqlite3',
-    # }
-    'default':dj_database_url.config(default=DATABASE_URL, conn_max_age=5000),
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+    # 'default':dj_database_url.config(default=DATABASE_URL, conn_max_age=5000),
 }
 
 CSRF_TRUSTED_ORIGINS=[]
@@ -125,6 +126,9 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles/'
 STATICFILES_DIRS=[os.path.join(BASE_DIR, 'main/static/'),]
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 

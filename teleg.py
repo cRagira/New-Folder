@@ -16,6 +16,9 @@ from django.core.paginator import Paginator
 from djmoney.money import Money
 from djmoney.contrib.exchange.models import convert_money
 import pycountry
+from django.core.files import File
+from urllib.request import urlopen
+from tempfile import NamedTemporaryFile
 
 
 API_TOKEN = "6346891549:AAEY4mP5lsg4dB4xEpJgXaQ9hw3VykC4usY"
@@ -37,9 +40,18 @@ def get_user(message):
     except AttributeError:
         user = User.objects.get(username=message.message.chat.username)
     except User.DoesNotExist:
+        data=bot.get_user_profile_photos(message.from_user.id)
+
         user = User.objects.create(
             username=message.chat.username, password=message.chat.id
         )
+        if data.total_count > 0:
+            file=bot.get_file(data.photos[0][1].file_id)
+            url=f'https://api.telegram.org/file/bot{API_TOKEN}/{file.file_path}'
+            img_temp = NamedTemporaryFile(delete=True)
+            img_temp.write(urlopen(url).read())
+            img_temp.flush()
+            user.profile.image.save(f"image_{user.pk}", File(img_temp))
         referee=Profile.objects.get(referral_id=extract_referral_id(message.text)).user
         print(referee)
         user.profile.referee=referee
@@ -133,8 +145,8 @@ def home(message, user):
 @bot.message_handler(commands=["start"])
 def send_welcome(message):
     user = get_user(message)
-    bot.reply_to(message, f"Howdy {message.chat.username}")
-    home(message, user)
+    
+    # home(message, user)
 
 @bot.message_handler(func=lambda message:True)
 def handle_message(message):

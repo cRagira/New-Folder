@@ -1,0 +1,13 @@
+{%extends 'main/base.html'%}
+{% block content %}
+{% for transaction in transactions%}
+{% if transaction.type == 'with' or 'depo' %}
+<div class="transaction">
+    <div class="info">#{{transaction.id}} <p>{{transaction.get_type_display}}</p></div>
+    <div class="info"><span>{{transaction.created|date:"M d, h:i a"}}</span> <p> Amount: {{transaction.amount}}</p></div>
+
+</div>
+{%endif%}
+{%endfor%}
+
+{% endblock content %}

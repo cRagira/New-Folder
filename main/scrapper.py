@@ -9,6 +9,7 @@ import datetime
 from selenium.webdriver.chrome.service import Service
 import json
 from .models import BetTicket, Match
+from djmoney.contrib.exchange.backends import FixerBackend
 from webdriver_manager.chrome import ChromeDriverManager
 
 def fetch_matches():
@@ -17,7 +18,7 @@ def fetch_matches():
     url = 'https://flashscore.co.ke'
 
     options.add_argument("--start-maximized")
-    options.add_argument("--headless")
+    # options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("user-data-dir=selenium")
@@ -180,6 +181,7 @@ def fetch_matches():
 
     t=datetime.datetime.now()
     if int(t.strftime('%M'))<10:
+        FixerBackend().update_rates()
         print('tomorrow')
         tomorrow=driver.find_element(By.XPATH,'//button[@class="calendar__navigation calendar__navigation--tomorrow"]')
         tomorrow.click()

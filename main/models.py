@@ -10,6 +10,7 @@ from django_countries.fields import CountryField
 import pycountry
 from djmoney.contrib.exchange.models import convert_money
 
+ref_value=Money(50, 'KES')
 def get_currency(code):
         country = pycountry.countries.get(alpha_3=code)
         currency_code = pycountry.currencies.get(numeric=country.numeric)
@@ -23,6 +24,7 @@ def get_referral_id():
         ref=gen()
         if not Profile.objects.filter(referral_id=ref).exists():
             return ref
+        
 
 
 @receiver(post_save, sender=User)
@@ -49,6 +51,7 @@ class Profile(models.Model):
     is_valid = models.BooleanField(default=False)
     balance=MoneyField(max_digits=14, decimal_places=2, default_currency='USD', default=Money(0,'USD'))
     redeem=models.IntegerField(default=0)
+    image=models.ImageField(blank=True, upload_to='uploads/dp/',null=True, default='default.png')
 
 
     def credit(self,amount):
@@ -72,8 +75,8 @@ class Profile(models.Model):
 
     def deposit(self,amount):
         depo=Money(amount,get_currency(self.country.alpha3))
-        self.balance+=cred
-        self.total_deposit+=cred
+        self.balance+=depo
+        self.total_deposit+=depo
         self.save()
         transaction=Transaction.objects.create(user=self.user,type='depo',amount=depo)
         transaction.save()
@@ -87,6 +90,11 @@ class Profile(models.Model):
     def user_currency(self):
         currency=get_currency(self.country.alpha3)
         return currency
+    
+    def unredeemed_refs(self):
+        ref=Profile.objects.filter(referee=self.user)
+        num=ref.filter(is_valid=True)
+        return num.count()*convert_money(ref_value, get_currency(self.country.alpha3))
 
     def __str__(self):
         return str(self.user)
@@ -112,6 +120,8 @@ class Match(models.Model):
 
     class Meta:
         verbose_name_plural = 'Matches'
+        ordering = ['-created']
+
 
     match_id = models.CharField(max_length=100, primary_key=True)
     title = models.CharField(max_length=100)
@@ -120,9 +130,9 @@ class Match(models.Model):
     time = models.DateTimeField()
     stage = models.CharField(max_length=10, choices=stageChoices.choices, default=stageChoices.SCHEDULED)
     #TODO fix other outcomes
-    home_odds = models.DecimalField(max_digits=6, decimal_places=3, null=True, blank=True)
-    draw_odds = models.DecimalField(max_digits=6, decimal_places=3, null=True, blank=True)
-    away_odds = models.DecimalField(max_digits=6, decimal_places=3, null=True, blank=True)
+    home_odds = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)
+    draw_odds = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)
+    away_odds = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)
     home_score = models.IntegerField(null=True, blank=True)
     away_score = models.IntegerField(null=True, blank=True)    
     outcome = models.CharField(max_length=4, choices=resultChoices.choices, default=resultChoices.PENDING)
@@ -137,7 +147,7 @@ class BetTicket(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     stake_amount = models.DecimalField(max_digits=8, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
-    total_odds = models.DecimalField(max_digits=10, decimal_places=3)
+    total_odds = models.DecimalField(max_digits=10, decimal_places=2)
     prize = models.DecimalField(max_digits=10, decimal_places=2)
     is_won = models.BooleanField(default=False)
     is_settled = models.BooleanField(default=False)
@@ -202,3 +212,10 @@ class Transaction(models.Model):
     type=models.CharField(max_length=10, choices=typeChoices.choices, default=None)
     amount=MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
     created=models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created']
+
+
+    def __str__(self):
+        return (self.type + " " + str(self.amount) +" " + str(self.created.strftime('%Y-%m-%d - %H:%M')))

@@ -1,11 +1,63 @@
+{% extends 'main/base.html' %}
 {% load static %}
 
 {% block content %}
-    {% for bet in bets %}
-        <div>
-            <a href="{% url 'main:bet-detail' bet.id %}">
-              {{bet}} - {{bet.stake_amount}} - {{bet.prize}}
-            </a>
+<p>My bets</p>
+{% for bet in bets %}
+<div class="bet">
+    <div class="info">#{{bet.id}} <p>Amount: {{bet.stake_amount}}</p>
+    </div>
+    <div class="info"><span>{{bet.created_at|date:"M d, h:i a"}}</span>
+        <p> To win: {{bet.prize}}</p>
+    </div>
+    <div class="info">
+        {% if bet.is_won %}
+        <span style="color: green;">won</span>
+        {% else %}
+        {%if bet.is_settled %}
+        <span style="color: red;">lost</span>
+        {% else %}
+        <span style="color: orange;">live</span>
+        {% endif %}
+        {% endif %}
+        <div class="down">
+            <i class="fa-solid fa-angle-down" onclick="showMore(this)"></i>
         </div>
+    </div>
+    <div class="selections hidden">
+        <hr>
+        {% for selection in bet.sselections.all %}
+        <div class="selection">
+            <div class="s-teams space-btn">
+                <p>
+                    {% if selection.is_correct %}
+                    <i class="fa-solid fa-circle-check" style="color: green;"></i>
+                    {% else %}
+                    {% if selection.match.stage != 'fin' %}
+                    <i class="fa-solid fa-clock" style="color: orange;"></i>
+                    {% else %}
+                    <i class="fa-solid fa-circle-xmark" style="color: red;"></i>
+                    {% endif %}
+                    {% endif %}
+                    {{selection.match.home}}
+                </p>
+                <div class="scores">{{selection.match.home_score|default_if_none:"-"}} :
+                    {{selection.match.away_score|default_if_none:"-"}} </div>
+                <p>{{selection.match.away}} </p>
+            </div>
+            <div class="pick space-btn">
+                <p class="space-btn lighter">Pick: <span>{{selection.selection}}({{selection.odds}})</span></p>
+                <p class="space-btn lighter">Outcome: <span>{{selection.match.outcome}}</span></p>
+            </div>
+        </div>
+        {% if forloop.counter != bet.sselections.all.count %}
+        <hr>
+        {% endif %}
+        {% endfor %}
+        <div class="up">
+            <i class="fa-solid fa-angle-up" onclick="showLess(this)"></i>
+        </div>
+    </div>
+</div>
     {%endfor%}
-{% endblock content %}
+    {% endblock content %}

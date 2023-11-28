@@ -5,20 +5,16 @@
     box-sizing: border-box;
 }
 
-.light {
-    background-color: white;
-}
-
-.light .odds_select {
+.odds_select {
     background-color: #e8e8e8;
 }
 
-.light .navbar {
+.navbar {
     background-color: white;
 }
 
 .dark {
-    background-color: black;
+    background-color: #291720;
 }
 
 .dark .odds_select {
@@ -27,7 +23,7 @@
 
 p {
     margin: 2px 0;
-    font-weight: 500;
+    font-weight: 400;
 }
 
 .time {
@@ -94,7 +90,7 @@ p {
 }
 
 .odds .odds_select label input[type='checkbox']:checked~span {
-    background: #fed800;
+    background: #04A777;
 }
 
 .navbar {
@@ -117,7 +113,7 @@ p {
 .betslip-icon {
     height: 4rem;
     width: 4rem;
-    background-color: #fed800;
+    background-color: #04A777;
     border-radius: 50%;
     display: grid;
 }
@@ -191,7 +187,6 @@ p {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding-bottom: 3rem;
 }
 
 .bet-amount input {
@@ -208,9 +203,14 @@ p {
     padding-right: 1rem;
 }
 
-.bet-amount input[type=submit] {
-    background-color: #fed800;
+button {
+    background-color: #04A777;
     font-style: normal;
+    padding: 15px 0;
+    margin: 5px;
+    width: 100%;
+    border: none;
+    border-radius: 5px;
 }
 
 .slip-content {
@@ -239,3 +239,211 @@ p {
     /* if real placeholder is shown - hide fake placeholder */
     opacity: 0;
 }
+.center{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.space-btn{
+    display: flex;
+    align-items: center;
+    justify-content: space-between
+
+}
+.username{
+    margin: 1rem;
+    padding: 1rem;
+    border-radius: 5px;
+    flex-direction: column;
+}
+.balances, .transaction{
+    margin: 1rem;
+    border: 1px solid #e6e6e6;
+    padding: 1rem;
+    border-radius: 5px
+}
+.balances i{
+    font-size: 2rem;
+    padding: 0 0.5rem;
+}
+.column{
+    display: flex;
+    flex-direction: column;
+}
+.profile-pic img{
+    height: 5rem;
+    border-radius: 50%;
+    width: 5rem;
+    object-fit: cover;
+}
+.transact-content{
+    margin: 1rem;
+    border: 1px solid #e6e6e6;
+    padding: 1rem;
+    border-radius: 5px
+}
+.transact-content input {
+    padding: 15px 0;
+    margin: 5px;
+    width: 100%;
+    border: none;
+    border-radius: 5px;
+}
+.transact-content input[type=number] {
+    background-color: #e8e8e8;
+    text-align: right;
+    padding-right: 1rem;
+}
+.transact-content p{
+    font-weight: bold;
+    margin: 0.5rem 1rem;
+}
+.transact-content span{
+    margin: 0 1rem;
+    color: gray;
+}
+.nav{
+    padding-bottom: 3rem;
+
+}
+.btn a{
+    text-decoration: none;
+    color: #291720;
+    background-color: #e8e8e8;
+    margin: 1rem;
+    padding: 1rem;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+}
+select{
+    padding-right: 1rem;
+}
+.settings{
+    padding: .5rem 1rem;
+}
+selections{
+    display: flex;
+    flex-direction: column;
+}
+/* .selections i{
+    padding-right: .5rem;
+} */
+.selections p{
+    font-size: .9rem;
+    width: 40%;
+    font-weight:normal;
+}
+.fa-angle-up{
+    float: right;
+}
+
+
+
+
+.custom-select {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .custom-select select {
+    display: none; /*hide original SELECT element: */
+  }
+  
+  .select-selected {
+    background-color: #04A777;
+  }
+  
+  /* Style the arrow inside the select element: */
+  .select-selected:after {
+    position: absolute;
+    content: "";
+    top: 1rem;
+    right: 5px;
+    width: 0;
+    height: 0;
+    border: 6px solid transparent;
+    border-color: #fff transparent transparent transparent;
+  }
+  
+  /* Point the arrow upwards when the select box is open (active): */
+  .select-selected.select-arrow-active:after {
+    border-color: transparent transparent #fff transparent;
+    top: 7px;
+  }
+  
+  /* style the items (options), including the selected item: */
+  .select-items div,.select-selected {
+    color: #291720;
+    padding: 8px 16px;
+    border: 1px solid transparent;
+    border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
+    cursor: pointer;
+  }
+  
+  /* Style items (options): */
+  .select-items {
+    position: absolute;
+    background-color: #e6e6e6;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 99;
+  }
+  
+  /* Hide the items when the select box is closed: */
+  .select-hide {
+    display: none;
+  }
+  
+  .select-items div:hover, .same-as-selected {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+  i{
+    color: #291720;
+  }
+  .bet{
+    border: 1px solid #e6e6e6;
+    border-radius: 5px;
+    margin: 1rem;
+    padding: 1rem;
+  }
+ 
+  .info{
+    font-weight: bold;
+    padding-bottom: .5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .info span{
+    font-weight:lighter;
+    font-size: .8rem;
+  }
+
+  .lighter{
+    font-weight: lighter;
+    width: 45%;
+  }
+  .lighter span{
+    font-size: .8rem;
+  }
+  hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid #e8e8e8;
+    margin: 1em 0;
+    padding: 0;
+  }
+  .pick{
+    color: gray;
+  }
+  .scores{
+    padding: 0.1rem 0.5rem;
+    border-radius: 25px;
+    background-color: #04A777;}

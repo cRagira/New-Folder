@@ -1,28 +1,13 @@
+{% extends 'main/base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>bet</title>
-    <link rel="stylesheet" href="{% static 'style.css' %}">
-    <script src="https://kit.fontawesome.com/d48fb8605a.js" crossorigin="anonymous" defer></script>
-
-</head>
-
-<body class="light">
-
+{% block content %}
     <div class="navbar">
-        <div><a href="/"><i class="fa-solid fa-house" onclick="makeActive('#games')"></i></a></div>
+        <div><i class="fa-solid fa-house" onclick="makeActive('#games')"></i></div>
         <div class="betslip-icon" id="betslip-icon" onclick="makeActive('#slip')"><i class="fa-solid fa-file"></i></div>
         <div><i class="fa-solid fa-user" onclick="makeActive('#account')"></i></div>
     </div>
     <div class="home" id="home">
-        <div>
-            <p>current balance: {{user.profile.balance}}</p>
-        </div>
+
         <form method="post">
             {%csrf_token%}
             <div class="games nav" id="games">
@@ -85,15 +70,79 @@
                             onkeyup="updateBetslip()">
                         <div class="placeholder">Amount</div>
                     </div>
-
-                    <input type="submit" value="place bet">
+                    <button id="submitBtn" disabled type="submit">place bet</button>
                 </div>
             </div>
 
         </form>
     </div>
     <div class="account nav hidden" id="account">
-        account
+        <div class="username center">
+            <div class="profile-pic">
+                <img src="{{user.profile.image.url}}" alt="">
+            </div>@IamChrisis
+        </div>
+        <div class="balances space-btn">
+            <div class="main-balance center"><i class="fa-solid fa-wallet"></i>
+                <div class="column"><span>Balance</span>{{user.profile.balance}}</div>
+            </div>
+            <div class="referral-balance center"><i class="fa-solid fa-people-group"></i>
+                <div class="column"><span>Referral balance</span>{{user.profile.unredeemed_refs}}</div>
+            </div>
+        </div>
+        <div class="transact">
+            <div class="deposit transact-content">
+                <p>Deposit</p>
+                <span>Deposit funds to your account</span>
+                <form action="{% url 'main:transact' %}" method="post">
+                    {%csrf_token%}
+                    <div class="wrapper">
+                        <input type="number" name="deposit-amount" id="deposit-amount" oninput="toggleDisable(this)">
+                        <div class="placeholder">Amount</div>
+                    </div>
+                    <button disabled type="submit">deposit</button>
+                </form>
+            </div>
+            <div class="withdraw transact-content">
+                <p>withdraw</p>
+                <span>withdraw funds from account</span>
+                <form action="{% url 'main:transact' %}" method="post">
+                    {%csrf_token%}
+                    <div class="wrapper">
+                        <input type="number" name="withdraw-amount" id="withdraw-amount" oninput="toggleDisable(this)">
+                        <div class="placeholder">Amount</div>
+                    </div>
+                    <button disabled type="submit">withdraw</button>
+                </form>
+            </div>
+            <div class="mybets btn">
+                <a href="{% url 'main:mybets' %}">
+                    <div><i class="fa-solid fa-clock"></i> bet history</div><i class="fa-solid fa-angle-right"></i>
+                </a>
+            </div>
+            <div class="transactions btn">
+                <a href="{% url 'main:transactions' %}">
+                    <div><i class="fa-solid fa-arrow-down-up-across-line"></i> transaction history</div><i
+                        class="fa-solid fa-angle-right"></i>
+                </a>
+            </div>
+            <div class="settings btn space-btn">
+                country
+                {% load countries %}
+                {% get_countries as countries %}
+                <div class="custom-select">
+                    <select>
+                        {% for country in countries %}
+                        {% if user.profile.country.code == country.code %}
+                        <option selected="selected" value="{{ country.name }}">{{ country.name }}</option>
+                        {% else %}
+                        <option value="{{ country.code }}"> {{ country.name }}</option>
+                        {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="betslip-container hidden" id="betslip-container">
         <div class="slip-teams">
@@ -108,99 +157,7 @@
 
         </div>
     </div>
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-
-    <script>
-        function updateBetslip() {
-            var checked = document.querySelectorAll("input[type=checkbox]:checked");
-            var betslipicon = document.getElementsByClassName('betslip-icon')[0]
-            var odds = 1.0
-            var betslip = document.getElementById('betslip')
-            $("#betslip").empty()
-            betslipicon.innerHTML = `<i class="fa-solid fa-file"></i>`;
-            checked.forEach(check => {
-                var odd = parseFloat(check.nextElementSibling.innerHTML)
-                var home = check.parentElement.parentElement.parentElement.previousElementSibling.children[0].textContent
-                var away = check.parentElement.parentElement.parentElement.previousElementSibling.children[1].textContent
-                var pick = check.value
-                var time = check.parentElement.parentElement.parentElement.parentElement.previousElementSibling.textContent
-                var name = check.name
-                odds = odds * odd
-                var emptyEl = document.getElementById('betslip-container').cloneNode(true)
-                emptyEl.setAttribute('id', name)
-                emptyEl.classList.remove("hidden")
-                emptyEl.children[1].innerHTML = odd
-                emptyEl.children[0].children[1].children[0].innerHTML = home + ' Vs ' + away
-                emptyEl.children[0].children[1].children[1].innerHTML = pick
-                emptyEl.children[0].children[1].children[2].innerHTML = time
-                betslip.append(emptyEl)
-                var hzRule = document.createElement('hr');// make a hr
-                betslip.append(hzRule)
-            });
-            var totalOdds = document.getElementsByClassName('total-odds')[0]
-            totalOdds.innerHTML = odds.toFixed(2)
-            var payout = document.getElementsByClassName('payout')[0]
-            var amount = document.getElementsByClassName('amount')[0].value
-
-            payout.innerHTML = "{{user.profile.user_currency}} " + (odds * amount).toFixed(2).toString()
-
-            if (checked.length > 0) {
-                betslipicon.innerHTML = `<div class='odds'><i>${checked.length}:</i><i> \n ${odds.toFixed(2)}</i></div>`;
-
-            }
-            else {
-                betslipicon.innerHTML = `<i class="fa-solid fa-file"></i>`;
-            }
-        }
-        function updateChecked(element) {
-            var $box = $(element);
-            if ($box.is(":checked")) {
-                // the name of the box is retrieved using the .attr() method
-                // as it is assumed and expected to be immutable
-                var group = "input:checkbox[name='" + $box.attr("name") + "']";
-                // the checked state of the group/box on the other hand will change
-                // and the current value is retrieved using .prop() method
-                $(group).prop("checked", false);
-                $(group).parent().parent().css("background-color", "#e8e8e8")
-
-                $box.prop("checked", true);
-                $box.parent().parent().css("background-color", "#fed800")
-            } else {
-                $box.prop("checked", false);
-                $box.parent().parent().css("background-color", "#e8e8e8")
-
-            }
-            updateBetslip()
-        }
-        function removeMatch(element) {
-            matchId = element.parentElement.parentElement.id
-            match = document.getElementsByName(matchId)
-            match.forEach(choice => {
-                choice.checked = false
-            });
-            updateBetslip()
-        }
-        function makeActive(id) {
-            $element = $(id)
-            $navs = $('.nav')
-            console.log($element.attr('id'))
-            $navs.each(function () {
-                console.log($(this).attr('id'))
-                if ($(this).attr('id') != $element.attr('id')) {
-                    $(this).addClass('hidden')
-                }
-                else {
-                    $(this).removeClass('hidden')
-                    console.log($element.attr('id') + 'matches')
-                }
-            })
+{% endblock content %}
 
 
-                ;
-        }
-    </script>
 
-</body>
-
-</html>
