@@ -1,7 +1,5 @@
 Telegram.WebApp.expand()
 Telegram.WebApp.ready()
-var currency="{{user.profile.user_currency}}";
-var data=JSON.stringify(window.Telegram.WebApp.initDataUnsafe);
 try {
     var u=document.getElementById('id_username')
     var p=document.getElementById('id_password')
@@ -10,11 +8,9 @@ try {
     p.value=(data.user.id).toString();
     t.children[3].click();
 } catch (error) {
-    console.log('error')
+    console.log(error)
     
 }
-
-
 
 function updateBetslip() {
     var checked = document.querySelectorAll("input[type=checkbox]:checked");
