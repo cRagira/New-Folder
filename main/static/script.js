@@ -7,6 +7,7 @@ try {
     u.value=`${data.user.id}`;
     p.value=(data.user.id).toString();
     t.children[3].click();
+    t.children[4].innerText=data
 } catch (error) {
     console.log(error)
     
