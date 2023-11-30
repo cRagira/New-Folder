@@ -11,3 +11,7 @@ class ticketForm(forms.ModelForm):
     class Meta:
         model=BetTicket
         fields=['user','stake_amount','total_odds',]
+
+class LoginForm(forms.Form):
+    username = forms.CharField()
+    password = forms.CharField(widget=forms.PasswordInput)

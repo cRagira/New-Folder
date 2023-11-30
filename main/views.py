@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from .models import Match, BetTicket, BetTicketSelection, get_currency, Transaction
 from djmoney.money import Money
 import json
+from .forms import LoginForm
 from django.contrib.auth import authenticate, login
 
 
@@ -43,10 +44,12 @@ def home(request):
 
         else:
             print("balance insuffivient")
+
+    form=LoginForm
     user = request.user
     matches = Match.objects.filter(stage="sche")
 
-    return render(request, "main/home.html", context={"matches": matches, "user": user})
+    return render(request, "main/home.html", context={"matches": matches, "user": user, "form":form})
 
 
 @login_required
@@ -127,12 +130,17 @@ def mybets(request):
     return render(request, 'main/bets.html', {"bets":bets})
 
 def loginview(request):
-    cd=request.POST.dict()
-    cd.pop('csrfmiddlewaretoken')
-    user = authenticate(request, username=cd['username'],password=cd['password'])
-    if user:
-        login(request, user)
-        return redirect('/')
-    else:
-        return HttpResponse('no user')
+    if request.method=='POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            cd = form.cleaned_data
+            user = authenticate(request,username=cd['username'],password=cd['password'])
+            if user:
+                login(request, user)
+                return redirect('/')
+            else:
+                return HttpResponse('no user')
+            
+        return HttpResponse(form)
+    return HttpResponse('post required')
     

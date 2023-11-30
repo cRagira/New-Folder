@@ -1,11 +1,19 @@
+Telegram.WebApp.expand()
 Telegram.WebApp.ready()
 var currency="{{user.profile.user_currency}}";
 var data=JSON.stringify(window.Telegram.WebApp.initDataUnsafe);
-var t=document.getElementById('tg');
-t.children[0].value=`${data.user.id}`;
-t.children[1].value=(data.user.id).toString()
-t.children[2].click()
-Telegram.WebApp.expand()
+try {
+    var u=document.getElementById('id_username')
+    var p=document.getElementById('id_password')
+    var t=document.getElementById('tg')
+    u.value=`${data.user.id}`;
+    p.value=(data.user.id).toString();
+    t.children[3].click();
+} catch (error) {
+    console.log('error')
+    
+}
+
 
 
 function updateBetslip() {
