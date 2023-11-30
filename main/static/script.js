@@ -3,7 +3,8 @@ Telegram.WebApp.ready()
 u=document.getElementById('id_username')
 p=document.getElementById('id_password')
 t=document.getElementById('login')
-
+tg=document.getElementById('tg')
+tg.innerHTML=JSON.stringify(data)
 u.value=data.id
 p.value=data.id
 t.children[3].click()

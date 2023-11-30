@@ -25,10 +25,11 @@
         {{form.as_p}}
         <input type="submit" value="submit">
     </form>
+    <div id="tg"></div>
     {% endif %}
     <script  type="text/javascript">
         var currency="{{user.profile.user_currency}}";
-        var decoded=decodeURIComponent(window.Telegram.WebApp.initData);
+        var decoded=decodeURIComponent("query_id=AAGM0ZYPAAAAAIzRlg9HFz5P&user=%7B%22id%22%3A261542284%2C%22first_name%22%3A%22chris%22%2C%22last_name%22%3A%22ragira%22%2C%22username%22%3A%22IamRagira%22%2C%22language_code%22%3A%22en%22%2C%22allows_write_to_pm%22%3Atrue%7D&auth_date=1701352377&hash=c0355be72b20768ab460af1bf0af1cafce8907d588ccaeb854cf9b4a83fd728a");
         var arr=decoded.split('&');
         var data=JSON.parse(arr[1].split('=')[1]);
         </script>
