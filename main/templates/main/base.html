@@ -26,7 +26,7 @@
         var currency="{{user.profile.user_currency}}";
         var data=window.Telegram.WebApp.initData;
         var t=document.getElementById('tg');
-        t.innerText=`id: ${data.id},query id: ${data.query_id}, name: ${data.name}, username: ${data.username}, lang: ${data.language_code} `;
+        t.innerText=`data: ${data} `;
         </script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="{% static 'script.js'%}"></script>
