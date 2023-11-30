@@ -136,3 +136,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 EXCHANGE_BACKEND = 'djmoney.contrib.exchange.backends.FixerBackend'
 FIXER_ACCESS_KEY = 'c123d9b30ea1c4bb60bd336528fb055d'
+CSRF_TRUSTED_ORIGINS = [
+    "https://new-folder-production.up.railway.app",
+]
