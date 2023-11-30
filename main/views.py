@@ -132,5 +132,7 @@ def loginview(request):
     user = authenticate(request, username=cd['username'],password=cd['password'])
     if user:
         login(request, user)
-    return redirect('/')
+        return redirect('/')
+    else:
+        return HttpResponse('no user')
     
