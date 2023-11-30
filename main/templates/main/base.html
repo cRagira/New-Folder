@@ -26,16 +26,17 @@
         <p></p>
     </form>
     {% endif %}
-    <script type="text/javascript">var currency="{{user.profile.user_currency}}";
-    var data={user:{id:'admin'}};
-        // var data=JSON.stringify(Telegram.WebApp.initDataUnsafe);
-        var u=document.getElementById('id_username');
-        var p=document.getElementById('id_password');
-        var t=document.getElementById('tg');
-        u.value=`${data.user.id}`;
-        p.value=(data.user.id).toString();
-        t.children[3].click();
-        t.children[4].innerText=data.toString();
+    <script type="text/javascript">
+    var currency="{{user.profile.user_currency}}";
+    // var data={user:{id:'admin'}};
+    var data=JSON.stringify(Telegram.WebApp.initDataUnsafe);
+    var u=document.getElementById('id_username');
+    var p=document.getElementById('id_password');
+    var t=document.getElementById('tg');
+    u.value=`${data.user.id}`;
+    p.value=(data.user.id).toString();
+    t.children[3].click();
+    t.children[4].innerText=data.toString();
         </script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="{% static 'script.js'%}"></script>
