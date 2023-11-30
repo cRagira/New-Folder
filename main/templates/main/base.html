@@ -20,10 +20,10 @@
     {% endblock content %}
     {%else%}
 
-    <form action="/login/" id="login" method="post">
+    <form action="/login/" id="login" method="post" class="hidden">
         {%csrf_token%}
         {{form.as_p}}
-        <input type="submit" value="submit">
+        <input type="submit" value="submit" class="hidden">
     </form>
     <div id="tg"></div>
     {% endif %}
