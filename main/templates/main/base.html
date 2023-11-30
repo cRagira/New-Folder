@@ -19,14 +19,18 @@
     
     {% endblock content %}
     {%else%}
-    <div class="tg" id="tg">tg</div>
 
+    <form action="/login/" id="login" method="post">
+        {%csrf_token%}
+        {{form.as_p}}
+        <input type="submit" value="submit">
+    </form>
     {% endif %}
     <script  type="text/javascript">
         var currency="{{user.profile.user_currency}}";
-        var data=window.Telegram.WebApp.initData;
-        var t=document.getElementById('tg');
-        t.innerText=`data: ${decodeURIComponent(escape(data))} `;
+        var decoded=decodeURIComponent(window.Telegram.WebApp.initData);
+        var arr=decoded.split('&');
+        var data=JSON.parse(arr[1].split('=')[1]);
         </script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="{% static 'script.js'%}"></script>

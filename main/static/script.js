@@ -1,6 +1,12 @@
 Telegram.WebApp.expand()
 Telegram.WebApp.ready()
+u=document.getElementById('id_username')
+p=document.getElementById('id_password')
+t=document.getElementById('login')
 
+u.value=data.id
+p.value=data.id
+t.children[3].click()
 
 function updateBetslip() {
     var checked = document.querySelectorAll("input[type=checkbox]:checked");
