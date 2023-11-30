@@ -10,6 +10,7 @@ urlpatterns = [
     path('fetch/',views.fetch_matches, name='fetch-matches'),
     path('transact/',views.transact, name='transact'),
     path('transactions/',views.transactions, name='transactions'),
+    path('login/', views.loginview, name='login'),
     
     #path('api/<str:pk>', views.MatchDetail.as_view(), name='Match-detail-api')
 ]

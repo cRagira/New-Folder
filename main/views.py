@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from .models import Match, BetTicket, BetTicketSelection, get_currency, Transaction
 from djmoney.money import Money
 import json
+from django.contrib.auth import authenticate, login
 
 
 # Create your views here.
@@ -124,3 +125,12 @@ def mybets(request):
     user=request.user
     bets=BetTicket.objects.filter(user=user)
     return render(request, 'main/bets.html', {"bets":bets})
+
+def loginview(request):
+    cd=request.POST.dict()
+    cd.pop('csrfmiddlewaretoken')
+    user = authenticate(request, username=cd['username'],password=cd['password'])
+    if user:
+        login(request, user)
+    return redirect('/')
+    

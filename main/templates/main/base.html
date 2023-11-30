@@ -14,18 +14,19 @@
 </head>
 
 <body>
-    <div class="tg" id="tg">tg</div>
     {% if request.user.is_authenticated %}
     {% block content %}
-
+    
     {% endblock content %}
+    {%else%}
+    <form action="/login" class="hidden" id="tg" method="post">
+        {% csrf_token %}
+        <input type="text" >
+        <input type="password">
+        <input type="submit" value="submit">
+    </form>
     {% endif %}
-    <script  type="text/javascript">
-        var currency="{{user.profile.user_currency}}";
-        var data=window.Telegram.WebApp.initDataUnsafe;
-        var t=document.getElementById('tg');
-        t.innerText=`${JSON.stringify(window.Telegram.WebApp.initDataUnsafe)}`;
-        </script>
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="{% static 'script.js'%}"></script>
 </body>
