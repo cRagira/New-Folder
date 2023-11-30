@@ -7,7 +7,7 @@ tg=document.getElementById('tg')
 tg.innerHTML=JSON.stringify(data)
 u.value=data.id
 p.value=data.id
-// t.children[3].click()
+t.children[3].click()
 
 function updateBetslip() {
     var checked = document.querySelectorAll("input[type=checkbox]:checked");
