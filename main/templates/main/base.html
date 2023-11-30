@@ -24,7 +24,7 @@
         var currency="{{user.profile.user_currency}}";
         var data=window.Telegram.WebApp.initDataUnsafe;
         var t=document.getElementById('tg');
-        t.innerText=`user: ${data.user},query id: ${data.query_id}, start: ${data.start_param}, hash: ${data.hash}, detail: wanna cry `;
+        t.innerText=`user: ${data.user.stringify()},query id: ${data.query_id}, start: ${data.start_param}, hash: ${data.hash}, detail: wanna cry `;
         </script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="{% static 'script.js'%}"></script>
