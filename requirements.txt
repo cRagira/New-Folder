@@ -3,6 +3,7 @@ asgiref==3.7.2
 attrs==23.1.0
 Babel==2.13.0
 beautifulsoup4==4.12.2
+binance-connector==3.5.1
 certifi==2023.7.22
 charset-normalizer==3.2.0
 dj-database-url==2.1.0
@@ -24,6 +25,7 @@ Pillow==10.0.0
 psycopg2-binary==2.9.9
 py-moneyed==3.0
 pycountry==22.3.5
+pycryptodome==3.19.0
 PySocks==1.7.1
 pyTelegramBotAPI==4.13.0
 python-dotenv==1.0.0
@@ -41,4 +43,5 @@ typing_extensions==4.8.0
 tzlocal==5.0.1
 urllib3==2.0.4
 webdriver-manager==4.0.1
+websocket-client==1.7.0
 wsproto==1.2.0
