@@ -9,14 +9,14 @@
     <title>bet</title>
     <link rel="stylesheet" href="{% static 'style.css' %}">
     <script src="https://kit.fontawesome.com/d48fb8605a.js" crossorigin="anonymous" defer></script>
-    
+
 
 </head>
 
 <body>
     {% if request.user.is_authenticated %}
     {% block content %}
-    
+
     {% endblock content %}
     {%else%}
 
@@ -25,15 +25,36 @@
         {{form.as_p}}
         <input type="submit" value="submit" class="hidden">
     </form>
-    <div id="tg"></div>
+    <div class="hidden" id="tg"></div>
     {% endif %}
-    <script  type="text/javascript">
-        var currency="{{user.profile.user_currency}}";
-        var decoded=decodeURIComponent(window.Telegram.WebApp.initData);
-        var arr=decoded.split('&');
-        var data=JSON.parse(arr[1].split('=')[1]);
-        </script>
+    <script type="text/javascript">
+        var currency = "{{user.profile.user_currency}}";
+        var balance = "{{user.profile.get_balance}}";
+        var decoded = decodeURIComponent(window.Telegram.WebApp.initData);
+        var arr = decoded.split('&');
+        // var data=JSON.parse(arr[1].split('=')[1]);
+        var data = { id: "admin" }
+    </script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="{% static 'script.js'%}"></script>
+    <script src="{% static 'jquery.toast.js'%}"></script>
+    {% if messages %}
+    {% for message in messages %}
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="{% static 'jquery.toast.js' %}"></script>
+    <script>
+        alert('{{message}}');
+        $.toast({
+            heading: '{{message.tags}}',
+            text: '{{message}}',
+            showHideTransition: 'slide',
+            position: 'top-center',
+            hideAfter: 7000,
+            icon: '{{message.tags}}'
+        })
+    </script>
+    {% endfor %}
+    {% endif %}
 </body>
+
 </html>

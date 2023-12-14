@@ -8,9 +8,9 @@ urlpatterns = [
     path('bets/',views.bets, name='mybets'),
     path('bets/<int:id>', views.bet_detail, name='bet-detail'),
     path('fetch/',views.fetch_matches, name='fetch-matches'),
-    path('transact/',views.transact, name='transact'),
     path('transactions/',views.transactions, name='transactions'),
     path('login/', views.loginview, name='login'),
+    path('trx/',views.trx,name='trx'),
     
     #path('api/<str:pk>', views.MatchDetail.as_view(), name='Match-detail-api')
 ]

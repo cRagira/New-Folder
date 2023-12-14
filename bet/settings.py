@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os
 from pathlib import Path
 import dj_database_url
+import moneyed
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -136,6 +137,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 EXCHANGE_BACKEND = 'djmoney.contrib.exchange.backends.FixerBackend'
 FIXER_ACCESS_KEY = 'c123d9b30ea1c4bb60bd336528fb055d'
+# FIXER_URL='https://data.fixer.io/api/latest?base=USD'
+
+WLD=moneyed.add_currency(
+    code='WLD',
+    numeric='999',
+    name='worldcoin'
+)
+
 CSRF_TRUSTED_ORIGINS = [
     "https://new-folder-production.up.railway.app",
 ]

@@ -1,15 +1,15 @@
 Telegram.WebApp.expand()
 Telegram.WebApp.ready()
-u=document.getElementById('id_username')
-p=document.getElementById('id_password')
-t=document.getElementById('login')
-tg=document.getElementById('tg')
-tg.innerHTML=JSON.stringify(data)
-u.value=data.id
-p.value=data.id
+u = document.getElementById('id_username')
+p = document.getElementById('id_password')
+t = document.getElementById('login')
+tg = document.getElementById('tg')
+tg.innerHTML = JSON.stringify(data)
+u.value = data.id
+p.value = data.id
 t.children[3].click()
 
-function updateBetslip() {
+function updateBetslip(element) {
     var checked = document.querySelectorAll("input[type=checkbox]:checked");
     var betslipicon = document.getElementsByClassName('betslip-icon')[0]
     var odds = 1.0
@@ -39,9 +39,9 @@ function updateBetslip() {
     totalOdds.innerHTML = odds.toFixed(2)
     var payout = document.getElementsByClassName('payout')[0]
     var amount = document.getElementsByClassName('amount')[0].value
-    var winnings=(odds.toFixed(2) * amount)
+    var winnings = (odds.toFixed(2) * amount)
 
-    payout.innerHTML = currency +' '+ winnings.toLocaleString()
+    payout.innerHTML = currency + ' ' + winnings.toLocaleString()
 
     if (checked.length > 0) {
         betslipicon.innerHTML = `<div class='odds'><i>${checked.length}:</i><i> \n ${odds.toFixed(2)}</i></div>`;
@@ -51,6 +51,17 @@ function updateBetslip() {
     else {
         betslipicon.innerHTML = `<i class="fa-solid fa-file"></i>`;
         $('#submitBtn').attr('disabled')
+    }
+    var button=document.getElementById('submitBtn')
+    var amountEl=document.getElementById('amount')
+    if (parseInt(amountEl.value) > parseInt(balance)){
+        amountEl.style.color='red'
+        button.setAttribute('disabled', '')        
+    }
+    else{
+        amountEl.style.color='black'
+        button.removeAttribute('disabled')
+
     }
 }
 function updateChecked(element) {
@@ -184,25 +195,104 @@ function closeAllSelect(elmnt) {
 then close all select boxes: */
 document.addEventListener("click", closeAllSelect);
 function toggleDisable(element) {
-    button=element.parentElement.nextElementSibling
+    button = element.parentElement.nextElementSibling
     if (element.value != '') {
         button.removeAttribute('disabled')
     }
-    else{
-        button.setAttribute('disabled','')
+    else {
+        button.setAttribute('disabled', '')
     }
 }
-function showMore(element){
-    bets=element.parentElement.parentElement.nextElementSibling
+function showMore(element) {
+    bets = element.parentElement.parentElement.nextElementSibling
     bets.classList.toggle('hidden')
     element.parentElement.classList.toggle('hidden')
-    down=document.getElementsByClassName('down')[0]
+    down = document.getElementsByClassName('down')[0]
 }
 
-function showLess(element){
-    bets=element.parentElement.parentElement
+function showLess(element) {
+    bets = element.parentElement.parentElement
     bets.classList.toggle('hidden')
     // element.parentElement.classList.toggle('hidden')
-    down=document.getElementsByClassName('down')[0]
+    down = document.getElementsByClassName('down')[0]
     down.classList.toggle('hidden')
 }
+
+let textString = document.querySelector('span.address').textContent;
+async function copyContent() {
+    try {
+        await navigator.clipboard.writeText(textString);
+        alert('Content copied to clipboard');
+    } catch (err) {
+        alert('Failed to copy: ', err);
+    }
+    showTrx()
+}
+
+async function pasteContent(element) {
+    let sib=element.previousElementSibling
+    let input = sib.previousElementSibling
+    try {
+        sib.classList.add('hidden')
+        const text = await navigator.clipboard.readText()
+        input.value = text;
+        console.log('Text pasted.');
+    } catch (error) {
+        console.log('Failed to read clipboard');
+    }
+}
+function showTrx() {
+    trx = document.getElementById('trx')
+    trx.classList.remove('hidden')
+}
+function showAddr(button) {
+    addr = document.getElementById('addr')
+    addr.classList.remove('hidden')
+    button.classList.add('hidden')
+
+}
+function hideDeposit() {
+    form = document.getElementById('deposit-form')
+    form.innerHTML = '<div id="myProgress"><div id="myBar"></div><div class="text">connecting to blockchain</div></div>'
+}
+
+async function checkTrx() {
+    let form = document.getElementById('deposit-form')
+    values = form.getElementsByTagName('input')
+    let data = new FormData();
+
+    for (let index = 0; index < values.length; index++) {
+        data.append(values[index].name, values[index].value)
+    }
+    hideDeposit()
+    try {
+        const response = await fetchWithTimeout("/trx/", {
+            method: "POST",
+            body: data,
+            headers: { "X-CSRFToken": '{{csrf_token}}' },
+            timeout: 35000,
+        });
+        const resp = await response.json();
+        if(await resp['result']==1){
+            alert('deposit successful')
+        }
+        else{
+            alert('transaction has already been debited')
+        }
+        
+    }
+    catch (error) {
+        console.log(error)
+        alert('transaction has not reflected,please wait before trying again')
+    }
+    form.innerHTML='<form id="deposit-form" action="/transact/" method="post"><input type="hidden" name="csrfmiddlewaretoken" value="vKSI5zOQiJUMgVMmicjL5VGlNHezfgYjq2QJMXmqDLNSXHCyrCM5xqbqB9w8fBMm"><div class="request"><div class="wrapper addr hidden" id="addr"><span class="address">0XAedzrESssGDZS#442Q</span><div class="copy" onclick="copyContent()"><i class="fa-solid fa-copy"></i> COPY</div></div><div class="hidden" id="trx"><div class="wrapper"><input type="text" name="trxcode" id="trxcode"><span class="hash">enter transaction hash</span><div class="copy" onclick="pasteContent()"><i class="fa-solid fa-clipboard"></i> PASTE</div></div><div><p class="small tut"><i class="fa-regular fa-circle-question"></i>How to find hash</p><button type="button" onclick="checkTrx()">Confirm Deposit</button></div></div><button type="button" onclick="showAddr(this)">request deposit address</button></div>'
+}
+async function fetchWithTimeout(resource, options = {}) {
+    const { timeout = 35000 } = options;
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), timeout);
+    const response = await fetch(resource, { ...options, signal: controller.signal });
+    clearTimeout(id);
+    return response
+}
+

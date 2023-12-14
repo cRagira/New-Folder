@@ -47,15 +47,19 @@ class Profile(models.Model):
     country=CountryField(default='US') #alpha3
     referral_id=models.CharField(max_length=6, unique=True)
     referee=models.ForeignKey(User,on_delete=models.SET_DEFAULT, default=SU, related_name='referral', blank=True, null=True)
-    total_deposit=MoneyField(max_digits=14, decimal_places=2, default_currency='USD', default=Money(0,'USD'))
+    total_deposit=MoneyField(max_digits=14, decimal_places=2, default_currency='WLD', default=Money(0,'WLD'))
     is_valid = models.BooleanField(default=False)
-    balance=MoneyField(max_digits=14, decimal_places=2, default_currency='USD', default=Money(0,'USD'))
+    balance=MoneyField(max_digits=14, decimal_places=2, default_currency='WLD', default=Money(0,'WLD'))
+    bonus=MoneyField(max_digits=14, decimal_places=2, default_currency='WLD', default=Money(0,'WLD'))
     redeem=models.IntegerField(default=0)
     image=models.ImageField(blank=True, upload_to='uploads/dp/',null=True, default='default.png')
 
+    def get_balance(self):
+        balance= convert_money(self.balance,self.user_currency())
+        return balance.amount.quantize(decimal.Decimal('.01'))
 
     def credit(self,amount):
-        cred=Money(amount,get_currency(self.country.alpha3))
+        cred=Money(amount,'WLD')
         self.balance+=cred
         self.total_deposit+=cred
         self.save()
@@ -67,24 +71,26 @@ class Profile(models.Model):
         transaction=Transaction.objects.create(user=self.user,type='cred',amount=cred)
         transaction.save()
     def debit(self,amount):
-        self.balance-=Money(amount,get_currency(self.country.alpha3))
+        self.balance-=Money(amount,'WLD')
         self.save()
-        transaction=Transaction.objects.create(user=self.user,type='debi',amount=Money(amount,get_currency(self.country.alpha3)))
+        transaction=Transaction.objects.create(user=self.user,type='debi',amount=Money(amount,'WLD'))
         transaction.save()
 
 
     def deposit(self,amount):
-        depo=Money(amount,get_currency(self.country.alpha3))
+        depo=Money(amount,'WLD')
         self.balance+=depo
+        if self.total_deposit==Money(0,'WLD') and depo>Money(2,'WLD'):
+            self.bonus=depo*.25
         self.total_deposit+=depo
         self.save()
         transaction=Transaction.objects.create(user=self.user,type='depo',amount=depo)
         transaction.save()
 
     def withdraw(self,amount):
-        self.balance-=Money(amount,get_currency(self.country.alpha3))
+        self.balance-=Money(amount,'WLD')
         self.save()
-        transaction=Transaction.objects.create(user=self.user,type='with',amount=Money(amount,get_currency(self.country.alpha3)))
+        transaction=Transaction.objects.create(user=self.user,type='with',amount=Money(amount,'WLD'))
         transaction.save()
 
     def user_currency(self):
@@ -94,7 +100,15 @@ class Profile(models.Model):
     def unredeemed_refs(self):
         ref=Profile.objects.filter(referee=self.user)
         num=ref.filter(is_valid=True)
-        return num.count()*convert_money(ref_value, get_currency(self.country.alpha3))
+        return num.count()*convert_money(ref_value, 'WLD')
+    
+    def has_withdrawn(self):
+        transactions=Transaction.objects.filter(user=self.user)
+        withdraws=transactions.filter(type='with')
+        if withdraws.count()>0:
+            return True
+        else:
+            return False
 
     def __str__(self):
         return str(self.user)
@@ -172,7 +186,7 @@ class BetTicket(models.Model):
                 
         if self.is_won == False:    
             if self.sselections.filter(selection__in=['home', 'draw', 'away']).exists(): # type: ignore
-                selections = self.sselections.all() # type: ignore
+                selections = self.sselections.all() 
                 all_correct = all(selection.is_correct() for selection in selections)
                 if all_correct:
                     self.is_won = all_correct
@@ -210,7 +224,7 @@ class Transaction(models.Model):
     SU= User.objects.filter(is_superuser=True).last().pk
     user=models.ForeignKey(User, on_delete=models.SET_DEFAULT, default=SU)
     type=models.CharField(max_length=10, choices=typeChoices.choices, default=None)
-    amount=MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
+    amount=MoneyField(max_digits=10, decimal_places=2, default_currency='WLD')
     created=models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -219,3 +233,14 @@ class Transaction(models.Model):
 
     def __str__(self):
         return (self.type + " " + str(self.amount) +" " + str(self.created.strftime('%Y-%m-%d - %H:%M')))
+    
+
+class EtherTransaction(models.Model):
+    hash=models.CharField(max_length=256)
+    from_addr=models.CharField(max_length=256)
+    to=models.CharField(max_length=256)
+    value=models.FloatField()
+    redeemed=models.BooleanField(default=False)
+    timeStamp=models.IntegerField()
+    txreceipt_status=models.CharField(max_length=256)
+    

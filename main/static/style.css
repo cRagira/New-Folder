@@ -220,13 +220,14 @@ button {
 }
 
 .hidden {
-    display: none;
+    display: none !important;
 }
 .wrapper {
     position: relative;
     width: 100%;
   }
 .placeholder {
+    font-size: .9rem;
     position: absolute;
     right: 4px;
     padding-left: 2rem;
@@ -282,14 +283,14 @@ button {
     padding: 1rem;
     border-radius: 5px
 }
-.transact-content input {
+.transact-content input{
     padding: 15px 0;
     margin: 5px;
     width: 100%;
     border: none;
     border-radius: 5px;
 }
-.transact-content input[type=number] {
+.transact-content input[type=number], .wrapper input[type=text]{
     background-color: #e8e8e8;
     text-align: right;
     padding-right: 1rem;
@@ -336,11 +337,48 @@ selections{
     width: 40%;
     font-weight:normal;
 }
+.addr{
+    background-color: #e8e8e8;
+    padding: 15px 0;
+    margin: 5px;
+    width: 100%;
+    border: none;
+    border-radius: 5px;
+    display: flex;
+    width: auto;
+    padding-left: 1rem;
+}
 .fa-angle-up{
     float: right;
 }
+.copy{
+    position: absolute;
+    padding-left: 2rem;
+    top: 1rem;
+    width: 100%;
+    right: 5px;
+    text-align: end;
 
+}
+#trxcode, #user-address{
+    text-align: left;
+    padding-left: 1rem;
+}
+.hash, .enter-address{
+    position: absolute;
+    top: 1rem;
+}
 
+.address{
+    margin: 0!important;
+}
+.small{
+    font-size: .8rem;
+    color: gray;
+  }
+.tut{
+    cursor: pointer;
+}
 
 
 .custom-select {
@@ -447,3 +485,59 @@ selections{
     padding: 0.1rem 0.5rem;
     border-radius: 25px;
     background-color: #04A777;}
+
+
+
+
+
+
+
+
+    #myProgress {
+        width: 100%;
+        max-width: 500px;
+        background: #F4F4F4;
+        box-shadow: inset -1px 1px 2px rgba(200, 200, 200, 0.2), inset 1px -1px 2px rgba(200, 200, 200, 0.2), inset -1px -1px 2px rgba(255, 255, 255, 0.9), inset 1px 1px 3px rgba(200, 200, 200, 0.9);
+        border-radius: 5px;
+        overflow: hidden;
+        position: relative;
+      }
+      .text{
+        position: absolute;
+        top: 10px;
+        left: 20px;
+      }
+      #myBar {
+        width: 10%;
+        height: 2.6rem;
+        background: #04A777;
+        border-radius: 5px;
+        text-align: center;
+        line-height: 30px;
+        color: white;
+        transition: 0.5s;
+        animation: loading82341 10s ease infinite;
+      }
+      
+      @keyframes loading82341 {
+        0% {
+          width: 0%;
+        }
+      
+        10% {
+          width: 10%;
+        }
+      
+        50% {
+          width: 40%;
+        }
+      
+        60% {
+          width: 60%;
+        }
+      
+        100% {
+          width: 100%;
+        }
+      }
+      

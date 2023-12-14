@@ -1,163 +1,187 @@
 {% extends 'main/base.html' %}
 {% load static %}
 {% block content %}
-    <div class="navbar">
-        <div><i class="fa-solid fa-house" onclick="makeActive('#games')"></i></div>
-        <div class="betslip-icon" id="betslip-icon" onclick="makeActive('#slip')"><i class="fa-solid fa-file"></i></div>
-        <div><i class="fa-solid fa-user" onclick="makeActive('#account')"></i></div>
-    </div>
-    <div class="home" id="home">
+<div class="navbar">
+    <div onclick="makeActive('#games')"><i class="fa-solid fa-house"></i></div>
+    <div class="betslip-icon" id="betslip-icon" onclick="makeActive('#slip')"><i class="fa-solid fa-file"></i></div>
+    <div onclick="makeActive('#account')"><i class="fa-solid fa-user"></i></div>
+</div>
+<div class="home" id="home">
 
-        <form method="post">
-            {%csrf_token%}
-            <div class="games nav" id="games">
-                {% for match in matches %}
+    <form method="post" id="betform">
+        {%csrf_token%}
+        <div class="games nav" id="games">
+            {% for match in matches %}
 
-                <div class="container">
-                    <span class="time">{{match.time|date:"M d, h:i a"}}</span>
-                    <div class="content">
-                        <div class="teams">
-                            <p>{{match.home}} </p>
-                            <p>{{match.away}}</p>
+            <div class="container">
+                <span class="time">{{match.time|date:"M d, h:i a"}}</span>
+                <div class="content">
+                    <div class="teams">
+                        <p>{{match.home}} </p>
+                        <p>{{match.away}}</p>
+                    </div>
+                    <div class="odds">
+                        <div class="odds_select">
+                            <label>
+                                <input type="checkbox" class="radioCheck" name="{{match.match_id}}" id="{{match.home}}"
+                                    value="home" onclick="updateChecked(this)">
+                                <span>{{match.home_odds}}</span>
+                            </label>
                         </div>
-                        <div class="odds">
-                            <div class="odds_select">
-                                <label>
-                                    <input type="checkbox" class="radioCheck" name="{{match.match_id}}"
-                                        id="{{match.home}}" value="home" onclick="updateChecked(this)">
-                                    <span>{{match.home_odds}}</span>
-                                </label>
-                            </div>
-                            <div class="odds_select">
-                                <label>
-                                    <input type="checkbox" class="radioCheck" name="{{match.match_id}}"
-                                        id="{{match.home}}-draw" value="draw" onclick="updateChecked(this)">
-                                    <span>{{match.draw_odds}}</span>
-                                </label>
-                            </div>
-                            <div class="odds_select">
-                                <label>
-                                    <input type="checkbox" class="radioCheck" name="{{match.match_id}}"
-                                        id="{{match.away}}" value="away" onclick="updateChecked(this)">
-                                    <span>{{match.away_odds}}</span>
-                                </label>
-                            </div>
+                        <div class="odds_select">
+                            <label>
+                                <input type="checkbox" class="radioCheck" name="{{match.match_id}}"
+                                    id="{{match.home}}-draw" value="draw" onclick="updateChecked(this)">
+                                <span>{{match.draw_odds}}</span>
+                            </label>
+                        </div>
+                        <div class="odds_select">
+                            <label>
+                                <input type="checkbox" class="radioCheck" name="{{match.match_id}}" id="{{match.away}}"
+                                    value="away" onclick="updateChecked(this)">
+                                <span>{{match.away_odds}}</span>
+                            </label>
                         </div>
                     </div>
-                    <br>
                 </div>
-                {% endfor %}
+                <br>
             </div>
-            <div class="slip nav hidden" id="slip">
-                <div class="betslip" id="betslip">
-                    <p>Please make a selection</p>
+            {% endfor %}
+        </div>
+        <div class="slip nav hidden" id="slip">
+            <div class="betslip" id="betslip">
+                <p>Please make a selection</p>
 
 
-                </div>
-                <hr>
-                <div class="bet-amount">
-                    <div class="inline"><span>Balance</span>
-                        <p class="account-balance">{{user.profile.balance}}</p>
-                    </div>
-                    <div class="inline"><span>Total Odds</span>
-                        <p class="total-odds"> 0</p>
-                    </div>
-                    <div class="inline"><span>Payout</span>
-                        <p class="payout"> 0</p>
-                    </div>
-                    <div class="wrapper">
-                        <input class="amount" type="number" name="amount" id="amount" value="100"
-                            onkeyup="updateBetslip()">
-                        <div class="placeholder">Amount</div>
-                    </div>
-                    <button id="submitBtn" disabled type="submit">place bet</button>
-                </div>
             </div>
+            <hr>
+            <div class="bet-amount">
+                <div class="inline"><span>Balance</span>
+                    <p class="account-balance">{{user.profile.user_currency}} {{user.profile.get_balance}}</p>
+                </div>
+                <div class="inline"><span>Total Odds</span>
+                    <p class="total-odds"> 0</p>
+                </div>
+                <div class="inline"><span>Payout</span>
+                    <p class="payout"> 0</p>
+                </div>
+                <div class="wrapper">
+                    <input class="amount" type="number" name="amount" id="amount" value="100"
+                        oninput="updateBetslip(this)">
+                    <div class="placeholder">Amount</div>
+                </div>
+                <button id="submitBtn" disabled type="submit">place bet</button>
+            </div>
+        </div>
 
-        </form>
+    </form>
+</div>
+<div class="account nav hidden" id="account">
+    <div class="username center">
+        <div class="profile-pic">
+            <img src="{{user.profile.image.url}}" alt="">
+        </div>@IamChrisis
     </div>
-    <div class="account nav hidden" id="account">
-        <div class="username center">
-            <div class="profile-pic">
-                <img src="{{user.profile.image.url}}" alt="">
-            </div>@IamChrisis
+    <div class="balances space-btn">
+        <div class="main-balance center"><i class="fa-solid fa-wallet"></i>
+            <div class="column"><span>Balance</span>WLD {{user.profile.balance.amount}} <span
+                    class="small">{{user.profile.user_currency}} {{user.profile.get_balance}}</span></div>
         </div>
-        <div class="balances space-btn">
-            <div class="main-balance center"><i class="fa-solid fa-wallet"></i>
-                <div class="column"><span>Balance</span>{{user.profile.balance}}</div>
-            </div>
-            <div class="referral-balance center"><i class="fa-solid fa-people-group"></i>
-                <div class="column"><span>Referral balance</span>{{user.profile.unredeemed_refs}}</div>
-            </div>
-        </div>
-        <div class="transact">
-            <div class="deposit transact-content">
-                <p>Deposit</p>
-                <span>Deposit funds to your account</span>
-                <form action="{% url 'main:transact' %}" method="post">
-                    {%csrf_token%}
-                    <div class="wrapper">
-                        <input type="number" name="deposit-amount" id="deposit-amount" oninput="toggleDisable(this)">
-                        <div class="placeholder">Amount</div>
-                    </div>
-                    <button disabled type="submit">deposit</button>
-                </form>
-            </div>
-            <div class="withdraw transact-content">
-                <p>withdraw</p>
-                <span>withdraw funds from account</span>
-                <form action="{% url 'main:transact' %}" method="post">
-                    {%csrf_token%}
-                    <div class="wrapper">
-                        <input type="number" name="withdraw-amount" id="withdraw-amount" oninput="toggleDisable(this)">
-                        <div class="placeholder">Amount</div>
-                    </div>
-                    <button disabled type="submit">withdraw</button>
-                </form>
-            </div>
-            <div class="mybets btn">
-                <a href="{% url 'main:mybets' %}">
-                    <div><i class="fa-solid fa-clock"></i> bet history</div><i class="fa-solid fa-angle-right"></i>
-                </a>
-            </div>
-            <div class="transactions btn">
-                <a href="{% url 'main:transactions' %}">
-                    <div><i class="fa-solid fa-arrow-down-up-across-line"></i> transaction history</div><i
-                        class="fa-solid fa-angle-right"></i>
-                </a>
-            </div>
-            <div class="settings btn space-btn">
-                country
-                {% load countries %}
-                {% get_countries as countries %}
-                <div class="custom-select">
-                    <select>
-                        {% for country in countries %}
-                        {% if user.profile.country.code == country.code %}
-                        <option selected="selected" value="{{ country.name }}">{{ country.name }}</option>
-                        {% else %}
-                        <option value="{{ country.code }}"> {{ country.name }}</option>
-                        {% endif %}
-                        {% endfor %}
-                    </select>
-                </div>
-            </div>
+        <div class="referral-balance center"><i class="fa-solid fa-people-group"></i>
+            <div class="column"><span>Referral balance</span>{{user.profile.unredeemed_refs}}</div>
         </div>
     </div>
-    <div class="betslip-container hidden" id="betslip-container">
-        <div class="slip-teams">
-            <i class="fa fa-remove" onclick="removeMatch(this)"></i>
-            <div class="team-details">
-                <p></p>
-                <span class="pick"></span>
-                <span class="time2"></span>
-            </div>
-        </div>
-        <div class="slip-odds">
+    <div class="transact">
+        <div class="deposit transact-content">
+            <p>Deposit</p>
+            <span>Deposit funds to your account</span>
+            <form id="deposit-form" action="{% url 'main:trx' %}" method="post">
+                {%csrf_token%}
+                <div class="request">
+                    <div class="wrapper addr hidden" id="addr">
+                        <span class="address">0XAedzrESssGDZS#442Q</span>
+                        <div class="copy" onclick="copyContent()">
+                            <i class="fa-solid fa-copy"></i> COPY
+                        </div>
+                    </div>
+                    <div class="hidden" id="trx">
+                        <div class="wrapper">
+                            <input type="text" name="trxcode" id="trxcode">
+                            <span class="hash">enter transaction hash</span>
+                            <div class="copy" onclick="pasteContent(this)">
+                                <i class="fa-solid fa-clipboard"></i> PASTE
+                            </div>
+                        </div>
+                        <div>
+                            <p class="small tut"><i class="fa-regular fa-circle-question"></i>How to find hash</p>
+                            <button type="button" onclick="checkTrx()">Confirm Deposit</button>
+                        </div>
+                    </div>
+                    <button type="button" onclick="showAddr(this)">request deposit address</button>
+                </div>
+
+            </form>
 
         </div>
+        <div class="withdraw transact-content">
+            <p>withdraw</p>
+            <span>withdraw funds from account</span>
+            <form action="{% url 'main:trx' %}" method="post">
+                {%csrf_token%}
+                <div class="wrapper">
+                    <input type="text" name="user-address" id="user-address">
+                    <span class="enter-address">enter worldcoin address</span>
+                    <div class="copy" onclick="pasteContent(this)">
+                        <i class="fa-solid fa-clipboard"></i> PASTE
+                    </div>
+                </div>
+                <div class="wrapper">
+                    <input type="number" step=".01" name="withdraw-amount" id="withdraw-amount" oninput="toggleDisable(this)">
+                    <div class="placeholder">Amount(WLD)</div>
+                </div>
+                <button disabled type="submit">withdraw</button>
+            </form>
+        </div>
+        <div class="mybets btn">
+            <a href="{% url 'main:mybets' %}">
+                <div><i class="fa-solid fa-clock"></i> bet history</div><i class="fa-solid fa-angle-right"></i>
+            </a>
+        </div>
+        <div class="transactions btn">
+            <a href="{% url 'main:transactions' %}">
+                <div><i class="fa-solid fa-arrow-down-up-across-line"></i> transaction history</div><i
+                    class="fa-solid fa-angle-right"></i>
+            </a>
+        </div>
+        <div class="settings btn space-btn">
+            country
+            {% load countries %}
+            {% get_countries as countries %}
+            <div class="custom-select">
+                <select>
+                    {% for country in countries %}
+                    {% if user.profile.country.code == country.code %}
+                    <option selected="selected" value="{{ country.name }}">{{ country.name }}</option>
+                    {% else %}
+                    <option value="{{ country.code }}"> {{ country.name }}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
     </div>
+</div>
+<div class="betslip-container hidden" id="betslip-container">
+    <div class="slip-teams">
+        <i class="fa fa-remove" onclick="removeMatch(this)"></i>
+        <div class="team-details">
+            <p></p>
+            <span class="pick"></span>
+            <span class="time2"></span>
+        </div>
+    </div>
+    <div class="slip-odds">
+
+    </div>
+</div>
 {% endblock content %}
-
-
-

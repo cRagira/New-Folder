@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block content %}
-<p>My bets</p>
+<p style="position: relative;text-align: center;padding-top: .5rem;"><span style="position: absolute;top: .5rem;left: 1.5rem;"><a href="/"><i class="fa-solid fa-angle-left" aria-hidden="true"></i></a></span> My bets</p>
 {% for bet in bets %}
 <div class="bet">
     <div class="info">#{{bet.id}} <p>Amount: {{bet.stake_amount}}</p>

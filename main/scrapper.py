@@ -1,4 +1,6 @@
+import decimal
 from django.utils import timezone
+import requests
 from selenium import webdriver
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
@@ -11,6 +13,9 @@ import json
 from .models import BetTicket, Match
 from djmoney.contrib.exchange.backends import FixerBackend
 from webdriver_manager.chrome import ChromeDriverManager
+from djmoney.contrib.exchange.models import ExchangeBackend, Rate
+
+BINANCE_URL='https://api.binance.com/api/v3/avgPrice'
 
 def fetch_matches():
     options = webdriver.ChromeOptions()
@@ -18,7 +23,7 @@ def fetch_matches():
     url = 'https://flashscore.co.ke'
 
     options.add_argument("--start-maximized")
-    # options.add_argument("--headless")
+    options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("user-data-dir=selenium")
@@ -182,6 +187,10 @@ def fetch_matches():
     t=datetime.datetime.now()
     if int(t.strftime('%M'))<10:
         FixerBackend().update_rates()
+        response=requests.get(url=BINANCE_URL,params={'symbol':'WLDUSDT'})
+        value=response.json()['price']
+        backend=ExchangeBackend.objects.all().last()
+        Rate.objects.create(currency='WLD', value=decimal.Decimal(value), backend=backend)
         print('tomorrow')
         tomorrow=driver.find_element(By.XPATH,'//button[@class="calendar__navigation calendar__navigation--tomorrow"]')
         tomorrow.click()

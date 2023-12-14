@@ -1,10 +1,26 @@
+import datetime
+import pprint
+import time
+from django.http import JsonResponse
 from django.shortcuts import redirect, render, HttpResponse
 from django.contrib.auth.decorators import login_required
-from .models import Match, BetTicket, BetTicketSelection, get_currency, Transaction
+import requests
+from .models import Match, BetTicket, BetTicketSelection, get_currency, Transaction, EtherTransaction
 from djmoney.money import Money
 import json
 from .forms import LoginForm
+from django.contrib import messages
 from django.contrib.auth import authenticate, login
+import logging
+import os
+from binance.spot import Spot as Client
+from binance.lib.utils import config_logging
+from dotenv import load_dotenv
+load_dotenv()
+api_key=os.environ.get('API_KEY')
+api_secret=os.environ.get('API_SECRET')
+
+BINANCE_URL='https://api.binance.com/sapi/v1/capital/withdraw/apply'
 
 
 # Create your views here.
@@ -15,7 +31,7 @@ def home(request):
         dict.pop("csrfmiddlewaretoken")
         amount = int(dict.pop("amount"))
         if request.user.profile.balance > Money(
-            amount, get_currency(request.user.profile.country.alpha3)
+            amount, 'WLD'
         ):
             bet = BetTicket.objects.create(
                 user=request.user, stake_amount=amount, total_odds=1, prize=100
@@ -41,9 +57,13 @@ def home(request):
             bet.prize = amount * total_odds
             bet.save()
             request.user.profile.debit(amount)
+            messages.success(request, 'Bet placed successfully.')
+            return redirect('/')
 
         else:
-            print("balance insuffivient")
+            print('insuff')
+            messages.error(request, 'Insufficient balance.')
+            return redirect('/')
 
     form=LoginForm
     user = request.user
@@ -102,23 +122,6 @@ def fetch_matches(request):
     return HttpResponse("fetched")
 
 
-def transact(request):
-    print(request.POST)
-    user=request.user
-    dict = request.POST.dict()
-    dict.pop("csrfmiddlewaretoken")
-    deposit = dict.get("deposit-amount")
-    if deposit:
-        print(f"deposit {deposit}")
-        user.profile.deposit(amount=deposit)
-    else:
-        withdraw = dict.get("withdraw-amount")
-        if withdraw:
-            print(f"withdraw {withdraw}")
-            user.profile.withdraw(amount=withdraw)
-
-    return redirect("/")
-
 def transactions(request):
     user=request.user
     transactions=Transaction.objects.filter(user=user.pk)
@@ -144,3 +147,41 @@ def loginview(request):
         return HttpResponse(form)
     return HttpResponse('post required')
     
+
+def trx(request):
+    user=request.user
+    form=request.POST.dict()
+    print(form)
+    form.pop('csrfmiddlewaretoken')
+    count=0
+    if form.get('trxcode'):
+        while count<5:
+            t=EtherTransaction.objects.filter(hash=form['trxcode'])
+            count+=1
+            time.sleep(5+count)
+            if t.count()==0:
+                continue
+            else:
+                tx=t[0]
+                if tx.redeemed==False:
+                    tx.redeemed=True
+                    user.profile.deposit(amount=tx.value) #safe input?
+                    tx.save()
+                    return JsonResponse({'result':1,'value':tx.value})
+                else:
+                    return JsonResponse({'result':2})
+        return JsonResponse({'result':0})
+    else:
+        address=form['user-address']
+        amount=form['withdraw-amount']
+        print(api_key,api_secret)
+        if user.profile.has_withdrawn():
+            config_logging(logging, logging.DEBUG)
+            spot_client = Client(api_key, api_secret, show_header=True)
+            response =logging.info(spot_client.withdraw(coin="WLD", amount=amount, address=address))
+            print(response)
+        else:
+            #send message
+            pass
+
+
