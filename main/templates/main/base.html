@@ -32,8 +32,8 @@
         var balance = "{{user.profile.get_balance}}";
         var decoded = decodeURIComponent(window.Telegram.WebApp.initData);
         var arr = decoded.split('&');
-        // var data=JSON.parse(arr[1].split('=')[1]);
-        var data = { id: "admin" }
+        var data=JSON.parse(arr[1].split('=')[1]);
+        // var data = { id: "admin" }
     </script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="{% static 'script.js'%}"></script>
