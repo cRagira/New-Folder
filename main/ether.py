@@ -29,8 +29,6 @@ def fetch_transactions():
     data.sort(key=lambda x: int(x['timeStamp']))
 
     for tx in data:
-        pprint.pprint(tx)
-        print('---------')
         t=int(datetime.datetime.now().timestamp())
         hash=tx['hash']
         from_addr=tx['from']

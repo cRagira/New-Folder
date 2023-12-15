@@ -159,3 +159,5 @@ cython_debug/
 #.idea/
 
 selenium/
+x.json
+x.html
