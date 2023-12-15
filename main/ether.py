@@ -7,7 +7,7 @@ import os
 from .models import EtherTransaction
 API_KEY='X39WS2Z5EFKSA7MT4642PEAF4CXK6KM9TG'
 BASE_URL="https://api.etherscan.io/api"
-address='0x338Cf2ec12E5473FC6D9eE0806289Dd109921F74'
+address='0x2d722c96f79d149dd21e9ef36f93fc12906ce9f8'
 ETHER_VALUE= 10**18
 
 
