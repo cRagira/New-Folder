@@ -28,8 +28,6 @@ ENV CHROMIUM_FLAGS="--disable-software-rasterizer --disable-dev-shm-usage"
 ENV PYTHONUNBUFFERED 1
 ENV PYTHONDONTWRITEBYTECODE 1
 
-RUN apk add python3 
-RUN echo $(python3 -m site --user-base)
 COPY requirements.txt .
 ENV PATH /home/root/.local/bin:${PATH}
 RUN apk update && apk add --update --no-cache python3 && ln -sf python3 /usr/bin/python && python3 -m ensurepip && pip3 install --no-cache --upgrade pip setuptools && pip install -r requirements.txt
