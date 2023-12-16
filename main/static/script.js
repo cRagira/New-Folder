@@ -218,15 +218,18 @@ function showLess(element) {
     down.classList.toggle('hidden')
 }
 
-let textString = document.querySelector('span.address').textContent;
-async function copyContent() {
-    try {
-        await navigator.clipboard.writeText(textString);
-        alert('Content copied to clipboard');
-    } catch (err) {
-        alert('Failed to copy: ', err);
-    }
-    showTrx()
+function copyContent() {
+    let copyText = document.getElementById('dep-address');
+    // var copyText = document.getElementById("myInput");
+    copyText.focus();
+    navigator.clipboard
+      .writeText(copyText.innerText)
+      .then(() => {
+        alert("successfully copied");
+      })
+      .catch(() => {
+        alert("something went wrong");
+      });
 }
 
 async function pasteContent(element) {

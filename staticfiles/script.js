@@ -218,10 +218,12 @@ function showLess(element) {
     down.classList.toggle('hidden')
 }
 
-let textString = document.querySelector('span.address').textContent;
+let textString = document.querySelector('span.address');
 async function copyContent() {
     try {
-        await navigator.clipboard.writeText(textString);
+        textString.focus();
+        textString.setSelectionRange(0, 99999);
+        await navigator.clipboard.writeText(textString).value;
         alert('Content copied to clipboard');
     } catch (err) {
         alert('Failed to copy: ', err);
@@ -229,13 +231,13 @@ async function copyContent() {
     showTrx()
 }
 
-async function pasteContent() {
-    let trxcode = document.getElementById('trxcode')
-    let hash=document.getElementsByClassName('hash')[0]
+async function pasteContent(element) {
+    let sib=element.previousElementSibling
+    let input = sib.previousElementSibling
     try {
-        hash.classList.add('hidden')
+        sib.classList.add('hidden')
         const text = await navigator.clipboard.readText()
-        trxcode.value = text;
+        input.value = text;
         console.log('Text pasted.');
     } catch (error) {
         console.log('Failed to read clipboard');
@@ -264,23 +266,31 @@ async function checkTrx() {
     for (let index = 0; index < values.length; index++) {
         data.append(values[index].name, values[index].value)
     }
+    hideDeposit()
     try {
         const response = await fetchWithTimeout("/trx/", {
             method: "POST",
             body: data,
             headers: { "X-CSRFToken": '{{csrf_token}}' },
-            timeout: 5000,
+            timeout: 35000,
         });
-        const movies = await response.json();
-        console.log(movies);
+        const resp = await response.json();
+        if(await resp['result']==1){
+            alert('deposit successful')
+        }
+        else{
+            alert('transaction has already been debited')
+        }
+        
     }
     catch (error) {
-        console.log('timeout')
+        console.log(error)
+        alert('transaction has not reflected,please wait before trying again')
     }
-    hideDeposit()
+    form.innerHTML='<form id="deposit-form" action="/transact/" method="post"><input type="hidden" name="csrfmiddlewaretoken" value="vKSI5zOQiJUMgVMmicjL5VGlNHezfgYjq2QJMXmqDLNSXHCyrCM5xqbqB9w8fBMm"><div class="request"><div class="wrapper addr hidden" id="addr"><span class="address">0XAedzrESssGDZS#442Q</span><div class="copy" onclick="copyContent()"><i class="fa-solid fa-copy"></i> COPY</div></div><div class="hidden" id="trx"><div class="wrapper"><input type="text" name="trxcode" id="trxcode"><span class="hash">enter transaction hash</span><div class="copy" onclick="pasteContent()"><i class="fa-solid fa-clipboard"></i> PASTE</div></div><div><p class="small tut"><i class="fa-regular fa-circle-question"></i>How to find hash</p><button type="button" onclick="checkTrx()">Confirm Deposit</button></div></div><button type="button" onclick="showAddr(this)">request deposit address</button></div>'
 }
 async function fetchWithTimeout(resource, options = {}) {
-    const { timeout = 800 } = options;
+    const { timeout = 35000 } = options;
     const controller = new AbortController();
     const id = setTimeout(() => controller.abort(), timeout);
     const response = await fetch(resource, { ...options, signal: controller.signal });
@@ -288,20 +298,3 @@ async function fetchWithTimeout(resource, options = {}) {
     return response
 }
 
-$(() => { 
-    $("#submitBtn").click(function(ev) { 
-        var form = $("#betform"); 
-        var url = form.attr('action'); 
-        $.ajax({ 
-            type: "GET", 
-            url: url, 
-            data: form.serialize(), 
-            success: function(data) {                   
-                alert("Form Submited Successfully"); 
-            }, 
-            error: function(data) {                   
-                alert("some Error"); 
-            } 
-        }); 
-    }); 
-}); 
