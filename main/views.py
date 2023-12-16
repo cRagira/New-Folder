@@ -20,7 +20,7 @@ load_dotenv()
 api_key=os.environ.get('API_KEY')
 api_secret=os.environ.get('API_SECRET')
 
-BINANCE_URL='https://api.binance.com/sapi/v1/capital/withdraw/apply'
+BINANCE_URL='https://api.binance.us/sapi/v1/capital/withdraw/apply'
 
 
 # Create your views here.
@@ -182,6 +182,8 @@ def trx(request):
             print(response)
         else:
             #send message
+            print(f'withdraw{amount}from{address}')
             pass
+        return HttpResponse('success')
 
 

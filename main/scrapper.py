@@ -186,7 +186,7 @@ def fetch_matches():
 
     t=datetime.datetime.now()
     if int(t.strftime('%M'))<10:
-        prev=Rate.objects.filter(currency='WLD')[0]
+        prev=Rate.objects.filter(currency='WLD')[0].value
         FixerBackend().update_rates()
         response=requests.get(url=BINANCE_URL,params={'symbol':'WLDUSDT'})
         value=response.json().get('price')
@@ -194,7 +194,7 @@ def fetch_matches():
         if value:
             Rate.objects.create(currency='WLD', value=decimal.Decimal(value), backend=backend)
         else:
-            Rate.objects.create(currency='WLD', value=prev.value, backend=backend)
+            Rate.objects.create(currency='WLD', value=prev, backend=backend)
         print('tomorrow')
         tomorrow=driver.find_element(By.XPATH,'//button[@class="calendar__navigation calendar__navigation--tomorrow"]')
         tomorrow.click()
