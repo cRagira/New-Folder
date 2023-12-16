@@ -3,7 +3,7 @@
 <p style="position: relative;text-align: center;padding-top: .5rem;"><span style="position: absolute;top: .5rem;left: 1.5rem;"><a href="/"><i class="fa-solid fa-angle-left" aria-hidden="true"></i></a></span> My transactions</p>
 
 {% for transaction in transactions%}
-{% if transaction.type == 'with' or 'depo' %}
+{% if transaction.type == 'with' or transaction.type == 'depo' %}
 <div class="transaction">
     <div class="info">#{{transaction.id}} <p>{{transaction.get_type_display}}</p></div>
     <div class="info"><span>{{transaction.created|date:"M d, h:i a"}}</span> <p> Amount: <span style="font-size: .8rem;font-weight: normal;">WLD</span> {{transaction.amount.amount}}</p></div>

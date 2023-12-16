@@ -157,7 +157,7 @@
             country
             {% load countries %}
             {% get_countries as countries %}
-            <div class="custom-select">
+            <div class="select">
                 <select>
                     {% for country in countries %}
                     {% if user.profile.country.code == country.code %}

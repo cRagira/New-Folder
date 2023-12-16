@@ -12,11 +12,14 @@ from .forms import LoginForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 import logging
+from djmoney.contrib.exchange.models import convert_money
+
 import os
 from binance.spot import Spot as Client
 from binance.lib.utils import config_logging
 from dotenv import load_dotenv
 load_dotenv()
+
 api_key=os.environ.get('API_KEY')
 api_secret=os.environ.get('API_SECRET')
 
@@ -29,12 +32,11 @@ def home(request):
         dict = request.POST.dict()
         print(dict)
         dict.pop("csrfmiddlewaretoken")
-        amount = int(dict.pop("amount"))
-        if request.user.profile.balance > Money(
-            amount, 'WLD'
-        ):
+        amount = Money(int(dict.pop("amount")),request.user.profile.user_currency())
+        wld=convert_money(amount,'WLD')
+        if request.user.profile.balance > wld:
             bet = BetTicket.objects.create(
-                user=request.user, stake_amount=amount, total_odds=1, prize=100
+                user=request.user, stake_amount=amount.amount, total_odds=1, prize=100
             )
             total_odds = 1
 
@@ -54,14 +56,13 @@ def home(request):
                 )
             print(total_odds)
             bet.total_odds = total_odds
-            bet.prize = amount * total_odds
+            bet.prize = amount.amount * total_odds
             bet.save()
-            request.user.profile.debit(amount)
+            request.user.profile.debit(wld.amount)
             messages.success(request, 'Bet placed successfully.')
             return redirect('/')
 
         else:
-            print('insuff')
             messages.error(request, 'Insufficient balance.')
             return redirect('/')
 
