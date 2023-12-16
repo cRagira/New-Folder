@@ -37,7 +37,7 @@ def fetch_transactions():
         timeStamp=int(tx['timeStamp'])
 
 
-        if int(tx['timeStamp'])<(int(datetime.datetime.now().timestamp()) - 600):
+        if int(tx['timeStamp'])>(int(datetime.datetime.now().timestamp()) - 600):
             EtherTransaction.objects.get_or_create(hash=hash,from_addr=from_addr,to=to,value=value,timeStamp=timeStamp)
 
     print('fetching trx')
