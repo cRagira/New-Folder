@@ -1,5 +1,32 @@
 FROM alpine:3.18
 
+# you can specify python version during image build
+ARG PYTHON_VERSION=3.11.4
+
+# install build dependencies and needed tools
+RUN apk add \
+    wget \
+    gcc \
+    make \
+    zlib-dev \
+    libffi-dev \
+    openssl-dev \
+    musl-dev
+
+# download and extract python sources
+RUN cd /opt \
+    && wget https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VERSION}.tgz \                                              
+    && tar xzf Python-${PYTHON_VERSION}.tgz
+
+# build python and remove left-over sources
+COPY requirements.txt .
+RUN cd /opt/Python-${PYTHON_VERSION} \ 
+    && ./configure --prefix=/usr --enable-optimizations --with-ensurepip=install \
+    && make install \
+    && rm /opt/Python-${PYTHON_VERSION}.tgz /opt/Python-${PYTHON_VERSION} -rf \
+    && pip install -r requirements.txt
+     
+
 # Installs latest Chromium package.
 RUN apk upgrade --no-cache --available \
     && apk add --no-cache \
@@ -28,8 +55,7 @@ ENV CHROMIUM_FLAGS="--disable-software-rasterizer --disable-dev-shm-usage"
 ENV PYTHONUNBUFFERED 1
 ENV PYTHONDONTWRITEBYTECODE 1
 
-COPY requirements.txt .
 ENV PATH /home/root/.local/bin:${PATH}
-RUN apk update && apk add --no-cache python3 py3-pip && pip install -r requirements.txt
+
 COPY . .
 ENTRYPOINT [ "gunicorn","bet.wsgi" ]
