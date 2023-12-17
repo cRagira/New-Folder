@@ -9,7 +9,6 @@ COPY . .
 
 FROM python:3.8.0-slim as app
 COPY --from=builder /root/.local /root/.local
-COPY --from=builder /main.py /main.py
 ENV PATH=/root/.local/bin:$PATH    
 
 
