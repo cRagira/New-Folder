@@ -74,8 +74,10 @@ def home(request):
     form=LoginForm
     user = request.user
     matches = Match.objects.filter(stage="sche")
-    country_form=CustomForm(instance=user.profile)
-    
+    if request.user.is_authenticated:
+        country_form=CustomForm(instance=user.profile)
+    else:
+        country_form=CustomForm()
 
     return render(request, "main/home.html", context={"matches": matches, "user": user, "form":form,'country_form':country_form})
 

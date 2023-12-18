@@ -196,7 +196,7 @@ def fetch_matches():
         value=decimal.Decimal(response.json().get('price'))*usd
         backend=ExchangeBackend.objects.all().last()
         if value:
-            Rate.objects.create(currency='WLD', value=decimal.Decimal(1/value), backend=backend)
+            Rate.objects.create(currency='WLD', value=decimal.Decimal(value), backend=backend)
         else:
             Rate.objects.create(currency='WLD', value=prev, backend=backend)
         print('tomorrow')
