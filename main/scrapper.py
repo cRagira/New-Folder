@@ -188,7 +188,7 @@ def fetch_matches():
     collectdata(datetime.datetime.today().date())
 
     t=datetime.datetime.now()
-    if int(t.strftime('%M')):
+    if int(t.strftime('%M'))<10:
         prev=Rate.objects.filter(currency='WLD')[0].value
         usd=Rate.objects.filter(currency='USD')[0].value
         FixerBackend().update_rates()
