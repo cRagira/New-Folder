@@ -7,7 +7,7 @@ RUN apt-get update \
 && apt-get clean
 RUN echo $(python3 -m site --user-base)
 COPY requirements.txt .
-ENV PATH /home/root/.local/bin:${PATH}
+ENV PATH /root/.local/bin:${PATH}
 RUN pip install --user -r requirements.txt
 COPY . .
 ENTRYPOINT [ "gunicorn","bet.wsgi" ]
