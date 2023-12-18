@@ -1,8 +1,9 @@
 FROM python:3.8.0-slim as builder
 RUN apt-get update \
 && apt-get install gcc -y \
-&& apt-get install chromium-chromedriver -y \
+&& apt-get install chromium -y \
 && apt-get clean
+RUN apt-get install chromium-chromedriver -y
 COPY requirements.txt .
 RUN pip install --user -r requirements.txt
 COPY . .
