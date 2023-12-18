@@ -28,8 +28,10 @@ def fetch_matches():
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("user-data-dir=selenium")
+
     s = Service(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install())
     driver = webdriver.Chrome(service=s,options=options)
+    # driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
 
 
 
@@ -188,17 +190,19 @@ def fetch_matches():
     collectdata(datetime.datetime.today().date())
 
     t=datetime.datetime.now()
-    if int(t.strftime('%M'))<10:
+    if int(t.strftime('%M')):
         FixerBackend().update_rates()
         response=requests.get(url=BINANCE_URL,params={'symbol':'WLDUSDT'})
         value=decimal.Decimal(response.json().get('price'))
         backend=ExchangeBackend.objects.all().last()
         if value:
             usd=Rate.objects.filter(currency='USD')[0].value
-            Rate.objects.create(currency='WLD', value=decimal.Decimal(value)/usd, backend=backend)
+            Rate.objects.create(currency='WLD', value=1/(value/usd), backend=backend)
+            print('new')
         else:
             prev=Rate.objects.filter(currency='WLD')[0].value
             Rate.objects.create(currency='WLD', value=prev, backend=backend)
+            print('prev')
         print('tomorrow')
         tomorrow=driver.find_element(By.XPATH,'//button[@class="calendar__navigation calendar__navigation--tomorrow"]')
         tomorrow.click()
