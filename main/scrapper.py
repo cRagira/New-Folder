@@ -16,7 +16,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 from djmoney.contrib.exchange.models import ExchangeBackend, Rate
 from webdriver_manager.core.os_manager import ChromeType
 
-BINANCE_URL='https://api.binance.com/api/v3/avgPrice'
+BINANCE_URL='https://api.binance.us/api/v3/avgPrice'
 
 def fetch_matches():
     options = webdriver.ChromeOptions()
@@ -193,7 +193,6 @@ def fetch_matches():
     if int(t.strftime('%M')):
         FixerBackend().update_rates()
         response=requests.get(url=BINANCE_URL,params={'symbol':'WLDUSDT'})
-        print(response.json())
         value=decimal.Decimal(response.json().get('price'))
         backend=ExchangeBackend.objects.all().last()
         if value:
