@@ -14,6 +14,7 @@ from .models import BetTicket, Match
 from djmoney.contrib.exchange.backends import FixerBackend
 from webdriver_manager.chrome import ChromeDriverManager
 from djmoney.contrib.exchange.models import ExchangeBackend, Rate
+from webdriver_manager.core.os_manager import ChromeType
 
 BINANCE_URL='https://api.binance.com/api/v3/avgPrice'
 
@@ -27,7 +28,7 @@ def fetch_matches():
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("user-data-dir=selenium")
-    s = Service('/usr/bin/chromedriver')
+    s = Service(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install())
     driver = webdriver.Chrome(service=s,options=options)
 
 
