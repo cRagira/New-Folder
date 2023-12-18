@@ -1,5 +1,5 @@
 from django import forms
-from .models import BetTicketSelection, BetTicket
+from .models import BetTicketSelection, BetTicket, Profile
 
 
 class ticketSelectionForm(forms.ModelForm):
@@ -15,3 +15,13 @@ class ticketForm(forms.ModelForm):
 class LoginForm(forms.Form):
     username = forms.CharField()
     password = forms.CharField(widget=forms.PasswordInput)
+
+from django_countries.fields import CountryField
+
+from django_countries.widgets import CountrySelectWidget
+
+class CustomForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ("country",)
+        widgets = {"country": CountrySelectWidget()}

@@ -9,6 +9,9 @@
     <title>bet</title>
     <link rel="stylesheet" href="{% static 'style.css' %}">
     <script src="https://kit.fontawesome.com/d48fb8605a.js" crossorigin="anonymous" defer></script>
+    <link rel="stylesheet" href="{% static 'jquery.toast.css' %}">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="{% static 'jquery.toast.js' %}"></script>
 
 
 </head>
@@ -32,29 +35,29 @@
         var balance = "{{user.profile.get_balance}}";
         var decoded = decodeURIComponent(window.Telegram.WebApp.initData);
         var arr = decoded.split('&');
-        var data=JSON.parse(arr[1].split('=')[1]);
+        var data = JSON.parse(arr[1].split('=')[1]);
         // var data = { id: "admin" }
     </script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="{% static 'script.js'%}"></script>
-    <script src="{% static 'jquery.toast.js'%}"></script>
     {% if messages %}
     {% for message in messages %}
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="{% static 'jquery.toast.js' %}"></script>
     <script>
-        alert('{{message}}');
+        console.log('{{message}}');
         $.toast({
             heading: '{{message.tags}}',
             text: '{{message}}',
             showHideTransition: 'slide',
-            position: 'top-center',
-            hideAfter: 7000,
+            position: 'top-right',
+            hideAfter: 4000,
             icon: '{{message.tags}}'
         })
     </script>
     {% endfor %}
     {% endif %}
+
 </body>
 
 </html>

@@ -222,10 +222,12 @@ button {
 .hidden {
     display: none !important;
 }
+
 .wrapper {
     position: relative;
     width: 100%;
-  }
+}
+
 .placeholder {
     font-size: .9rem;
     position: absolute;
@@ -233,81 +235,96 @@ button {
     padding-left: 2rem;
     top: 1rem;
     pointer-events: none;
-    width: 100%;    
+    width: 100%;
 }
 
 .input:placeholder-shown+.placeholder {
     /* if real placeholder is shown - hide fake placeholder */
     opacity: 0;
 }
-.center{
+
+.center {
     display: flex;
     align-items: center;
     justify-content: center;
 }
-.space-btn{
+
+.space-btn {
     display: flex;
     align-items: center;
     justify-content: space-between
-
 }
-.username{
+
+.username {
     margin: 1rem;
     padding: 1rem;
     border-radius: 5px;
     flex-direction: column;
 }
-.balances, .transaction{
+
+.balances,
+.transaction {
     margin: 1rem;
     border: 1px solid #e6e6e6;
     padding: 1rem;
     border-radius: 5px
 }
-.balances i{
+
+.balances i {
     font-size: 2rem;
     padding: 0 0.5rem;
 }
-.column{
+
+.column {
     display: flex;
     flex-direction: column;
 }
-.profile-pic img{
+
+.profile-pic img {
     height: 5rem;
     border-radius: 50%;
     width: 5rem;
     object-fit: cover;
 }
-.transact-content{
+
+.transact-content {
     margin: 1rem;
     border: 1px solid #e6e6e6;
     padding: 1rem;
     border-radius: 5px
 }
-.transact-content input{
+
+.transact-content input {
     padding: 15px 0;
     margin: 5px;
     width: 100%;
     border: none;
     border-radius: 5px;
 }
-.transact-content input[type=number], .wrapper input[type=text]{
+
+.transact-content input[type=number],
+.wrapper input[type=text] {
     background-color: #e8e8e8;
     text-align: right;
     padding-right: 1rem;
 }
-.transact-content p{
+
+.transact-content p {
     font-weight: bold;
     margin: 0.5rem 1rem;
 }
-.transact-content span{
+
+.transact-content span {
     margin: 0 1rem;
     color: gray;
 }
-.nav{
+
+.nav {
     padding-bottom: 3rem;
 
 }
-.btn a{
+
+.btn a {
     text-decoration: none;
     color: #291720;
     background-color: #e8e8e8;
@@ -319,25 +336,30 @@ button {
     align-items: center;
 
 }
-select{
+
+select {
     padding-right: 1rem;
 }
-.settings{
+
+.settings {
     padding: .5rem 1rem;
 }
-selections{
+
+selections {
     display: flex;
     flex-direction: column;
 }
+
 /* .selections i{
     padding-right: .5rem;
 } */
-.selections p{
+.selections p {
     font-size: .9rem;
     width: 40%;
-    font-weight:normal;
+    font-weight: normal;
 }
-.addr{
+
+.addr {
     background-color: #e8e8e8;
     padding: 15px 0;
     margin: 5px;
@@ -348,10 +370,12 @@ selections{
     width: auto;
     padding-left: 1rem;
 }
-.fa-angle-up{
+
+.fa-angle-up {
     float: right;
 }
-.copy{
+
+.copy {
     position: absolute;
     padding-left: 2rem;
     top: 1rem;
@@ -360,74 +384,87 @@ selections{
     text-align: end;
 
 }
-#trxcode, #user-address{
+
+#trxcode,
+#user-address {
     text-align: left;
     padding-left: 1rem;
 }
-.hash, .enter-address{
+
+.hash,
+.enter-address {
     position: absolute;
     top: 1rem;
 }
 
-.address{
-    margin: 0!important;
+.address {
+    margin: 0 !important;
 }
-.small{
+
+.small {
     font-size: .8rem;
     color: gray;
-  }
-.tut{
+}
+
+.tut {
     cursor: pointer;
 }
 
 
 
 
-  
-  i{
+
+i {
     color: #291720;
-  }
-  .bet{
+}
+
+.bet {
     border: 1px solid #e6e6e6;
     border-radius: 5px;
     margin: 1rem;
     padding: 1rem;
-  }
- 
-  .info{
+}
+
+.info {
     font-weight: bold;
     padding-bottom: .5rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
-  }
-  .info span{
-    font-weight:lighter;
-    font-size: .8rem;
-  }
+}
 
-  .lighter{
+.info span {
+    font-weight: lighter;
+    font-size: .8rem;
+}
+
+.lighter {
     font-weight: lighter;
     width: 45%;
-  }
-  .lighter span{
+}
+
+.lighter span {
     font-size: .8rem;
-  }
-  hr {
+}
+
+hr {
     display: block;
     height: 1px;
     border: 0;
     border-top: 1px solid #e8e8e8;
     margin: 1em 0;
     padding: 0;
-  }
-  .pick{
+}
+
+.pick {
     color: gray;
-  }
-  .scores{
+}
+
+.scores {
     padding: 0.1rem 0.5rem;
     border-radius: 25px;
-    background-color: #04A777;}
+    background-color: #04A777;
+}
 
 
 
@@ -436,111 +473,106 @@ selections{
 
 
 
-    #myProgress {
-        width: 100%;
-        max-width: 500px;
-        background: #F4F4F4;
-        box-shadow: inset -1px 1px 2px rgba(200, 200, 200, 0.2), inset 1px -1px 2px rgba(200, 200, 200, 0.2), inset -1px -1px 2px rgba(255, 255, 255, 0.9), inset 1px 1px 3px rgba(200, 200, 200, 0.9);
-        border-radius: 5px;
-        overflow: hidden;
-        position: relative;
-      }
-      .text{
-        position: absolute;
-        top: 10px;
-        left: 20px;
-      }
-      #myBar {
-        width: 10%;
-        height: 2.6rem;
-        background: #04A777;
-        border-radius: 5px;
-        text-align: center;
-        line-height: 30px;
-        color: white;
-        transition: 0.5s;
-        animation: loading82341 10s ease infinite;
-      }
-      
-      @keyframes loading82341 {
-        0% {
-          width: 0%;
-        }
-      
-        10% {
-          width: 10%;
-        }
-      
-        50% {
-          width: 40%;
-        }
-      
-        60% {
-          width: 60%;
-        }
-      
-        100% {
-          width: 100%;
-        }
-      }
-      
-
-/* The container must be positioned relative: */
-.custom-select {
+#myProgress {
+    width: 100%;
+    max-width: 500px;
+    background: #F4F4F4;
+    box-shadow: inset -1px 1px 2px rgba(200, 200, 200, 0.2), inset 1px -1px 2px rgba(200, 200, 200, 0.2), inset -1px -1px 2px rgba(255, 255, 255, 0.9), inset 1px 1px 3px rgba(200, 200, 200, 0.9);
+    border-radius: 5px;
+    overflow: hidden;
     position: relative;
-    font-family: Arial;
-  }
-  
-  .custom-select select {
-    display: none; /*hide original SELECT element: */
-  }
-  
-  .select-selected {
-    background-color: DodgerBlue;
-  }
-  
-  /* Style the arrow inside the select element: */
-  .select-selected:after {
+}
+
+.text {
     position: absolute;
-    content: "";
-    top: 14px;
-    right: 10px;
-    width: 0;
-    height: 0;
-    border: 6px solid transparent;
-    border-color: #fff transparent transparent transparent;
-  }
-  
-  /* Point the arrow upwards when the select box is open (active): */
-  .select-selected.select-arrow-active:after {
-    border-color: transparent transparent #fff transparent;
-    top: 7px;
-  }
-  
-  /* style the items (options), including the selected item: */
-  .select-items div,.select-selected {
-    color: #ffffff;
-    padding: 8px 16px;
-    border: 1px solid transparent;
-    border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
+    top: 10px;
+    left: 20px;
+}
+
+#myBar {
+    width: 10%;
+    height: 2.6rem;
+    background: #04A777;
+    border-radius: 5px;
+    text-align: center;
+    line-height: 30px;
+    color: white;
+    transition: 0.5s;
+    animation: loading82341 10s ease infinite;
+}
+
+@keyframes loading82341 {
+    0% {
+        width: 0%;
+    }
+
+    10% {
+        width: 10%;
+    }
+
+    50% {
+        width: 40%;
+    }
+
+    60% {
+        width: 60%;
+    }
+
+    100% {
+        width: 100%;
+    }
+}
+#id_country{
+    text-indent: 2rem;
+    height: 2.5rem;
+    border: none;
+}
+.country-select-flag{
+    position: absolute;
+    left: 2rem;
+}
+.country-select-flag{
+    padding-top: .5rem;
+}
+.settings .fa-angle-down{
+    position: absolute;
+    padding-top: 2.1rem;
+    right: 3rem;
+    pointer-events: none;
+}
+
+ 
+
+select {
+    appearance: none;
+    outline: 0;
+    background: #e6e6e6;
+    background-image: none;
+    width: 100%;
+    height: 100%;
+    color: black;
     cursor: pointer;
-  }
-  
-  /* Style items (options): */
-  .select-items {
-    position: absolute;
-    background-color: DodgerBlue;
-    top: 100%;
-    left: 0;
-    right: 0;
-    z-index: 99;
-  }
-  
-  /* Hide the items when the select box is closed: */
-  .select-hide {
-    display: none;
-  }
-  
-  .select-items div:hover, .same-as-selected {
-    background-color: rgba(0, 0, 0, 0.1);
-  }
+    border-radius: 5px;
+}
+
+.select {
+    position: relative;
+    display: block;
+    width: 80%;
+    height: 2.5rem;
+    line-height: 3;
+    overflow: hidden;
+    border-radius: .25em;
+    padding-bottom: 10px;
+}
+.select option{
+    text-align: center;
+}
+
+
+
+
+
+
+
+

@@ -5,7 +5,7 @@ from django.http import JsonResponse
 from django.shortcuts import redirect, render, HttpResponse
 from django.contrib.auth.decorators import login_required
 import requests
-from .models import Match, BetTicket, BetTicketSelection, get_currency, Transaction, EtherTransaction
+from .models import Match, BetTicket, BetTicketSelection, get_currency, Transaction, EtherTransaction, Profile
 from djmoney.money import Money
 import json
 from .forms import LoginForm
@@ -13,7 +13,12 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login
 import logging
 from djmoney.contrib.exchange.models import convert_money
-
+from .forms import CustomForm
+import smtplib
+import ssl
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from binance.exceptions import BinanceAPIException
 import os
 from binance.spot import Spot as Client
 from binance.lib.utils import config_logging
@@ -69,8 +74,10 @@ def home(request):
     form=LoginForm
     user = request.user
     matches = Match.objects.filter(stage="sche")
+    country_form=CustomForm(instance=user.profile)
+    
 
-    return render(request, "main/home.html", context={"matches": matches, "user": user, "form":form})
+    return render(request, "main/home.html", context={"matches": matches, "user": user, "form":form,'country_form':country_form})
 
 
 @login_required
@@ -80,47 +87,47 @@ def bets(request):
     return render(request, "main/bets.html", {"bets": bets})
 
 
-@login_required
-def bet_detail(request, id):
-    bet = BetTicket.objects.get(id=id)
+# @login_required
+# def bet_detail(request, id):
+#     bet = BetTicket.objects.get(id=id)
 
-    return render(request, "main/bet_detail.html", {"bet": bet})
-
-
-from django.views.decorators.http import require_POST
-from django.views.decorators.csrf import csrf_exempt
+#     return render(request, "main/bet_detail.html", {"bet": bet})
 
 
-@csrf_exempt
-@require_POST
-def fetch_matches(request):
-    matches = json.loads(request.body)
-    for match in matches:
-        instance = Match.objects.filter(match_id=match["match_id"]).first()
-        if instance:
-            instance.stage = match["stage"]
-            instance.home_odds = match["home_odds"]
-            instance.draw_odds = match["draw_odds"]
-            instance.away_odds = match["away_odds"]
-            instance.home_score = match["home_score"]
-            instance.away_score = match["away_score"]
-            instance.save()
+# from django.views.decorators.http import require_POST
+# from django.views.decorators.csrf import csrf_exempt
 
-        else:
-            Match.objects.create(
-                match_id=match["match_id"],
-                title=match["title"],
-                home=match["home"],
-                away=match["away"],
-                time=match["time"],
-                stage=match["stage"],
-                home_odds=match["home_odds"],
-                draw_odds=match["draw_odds"],
-                away_odds=match["away_odds"],
-                home_score=match["home_score"],
-                away_score=match["away_score"],
-            )
-    return HttpResponse("fetched")
+
+# @csrf_exempt
+# @require_POST
+# def fetch_matches(request):
+#     matches = json.loads(request.body)
+#     for match in matches:
+#         instance = Match.objects.filter(match_id=match["match_id"]).first()
+#         if instance:
+#             instance.stage = match["stage"]
+#             instance.home_odds = match["home_odds"]
+#             instance.draw_odds = match["draw_odds"]
+#             instance.away_odds = match["away_odds"]
+#             instance.home_score = match["home_score"]
+#             instance.away_score = match["away_score"]
+#             instance.save()
+
+#         else:
+#             Match.objects.create(
+#                 match_id=match["match_id"],
+#                 title=match["title"],
+#                 home=match["home"],
+#                 away=match["away"],
+#                 time=match["time"],
+#                 stage=match["stage"],
+#                 home_odds=match["home_odds"],
+#                 draw_odds=match["draw_odds"],
+#                 away_odds=match["away_odds"],
+#                 home_score=match["home_score"],
+#                 away_score=match["away_score"],
+#             )
+#     return HttpResponse("fetched")
 
 
 def transactions(request):
@@ -177,14 +184,63 @@ def trx(request):
         amount=form['withdraw-amount']
         print(api_key,api_secret)
         if user.profile.has_withdrawn():
-            config_logging(logging, logging.DEBUG)
-            spot_client = Client(api_key, api_secret, show_header=True)
-            response =logging.info(spot_client.withdraw(coin="WLD", amount=amount, address=address))
-            print(response)
-        else:
-            #send message
-            print(f'withdraw{amount}from{address}')
-            pass
-        return HttpResponse('success')
+            spot_client = Client(api_key, api_secret)
+            try:
+                spot_client.withdraw(coin="WLD", amount=amount, address=address, recvWindow=6000)
+                messages.success(request,'Withdrawal Initiated')
+                return redirect('/')
 
+            except Exception as e:
+                print(e)
+                messages.error(request, 'Failed, please try again later or contact admin')
+                return redirect('/')
+        else:
+            sender = os.environ.get('sender')
+            receiver=os.environ.get('receiver')
+            subject = amount
+            message = address
+
+
+            smtp_server = 'smtp.gmail.com'
+            smtp_port = 465
+            username = sender
+            password=os.environ.get('PASSWORD')
+
+            msg = MIMEMultipart()
+            msg['From'] = sender
+            msg['To'] = receiver
+            msg['Subject'] = subject
+
+            msg.attach(MIMEText(message, 'plain'))
+
+            context = ssl.create_default_context()
+
+            try:
+                with smtplib.SMTP_SSL(smtp_server, smtp_port, context=context) as smtp:
+                    smtp.login(username, password)
+
+                    # Send the email
+                    smtp.send_message(msg)
+                    messages.success(request,'Withdrawal Initiated')
+                    return redirect('/')
+
+            except Exception as e:
+                print(f'Error: {e}')
+                messages.error(request,'Failed, please try again later or contact admin')
+                return redirect('/')
+                        
+        messages.success(request,'Withdrawal Initiated')
+        return redirect('/')
+
+def country(request):
+    profile=Profile.objects.filter(user=request.user)[0]
+    form=CustomForm(request.POST, instance=profile)
+    if form.is_valid():
+        form.save()
+    else:
+        messages.error(request,'Failed to update country, try again.')
+        return redirect('/')
+
+    messages.success(request,'country changed succesfully')
+    return redirect('/')
 

@@ -117,7 +117,7 @@
                             <button type="button" onclick="checkTrx()">Confirm Deposit</button>
                         </div>
                     </div>
-                    <button type="button" onclick="showAddr(this)">request deposit address</button>
+                    <button type="button" onclick="showAddr(this)" id="showAddrBtn">request deposit address</button>
                 </div>
 
             </form>
@@ -136,7 +136,8 @@
                     </div>
                 </div>
                 <div class="wrapper">
-                    <input type="number" step=".01" name="withdraw-amount" id="withdraw-amount" oninput="toggleDisable(this)">
+                    <input type="number" step=".01" name="withdraw-amount" id="withdraw-amount"
+                        oninput="toggleDisable(this)">
                     <div class="placeholder">Amount(WLD)</div>
                 </div>
                 <button disabled type="submit">withdraw</button>
@@ -149,25 +150,19 @@
         </div>
         <div class="transactions btn">
             <a href="{% url 'main:transactions' %}">
-                <div><i class="fa-solid fa-arrow-down-up-across-line"></i> transaction history</div><i
-                    class="fa-solid fa-angle-right"></i>
+                <div><i class="fa-solid fa-arrow-down-up-across-line"></i> transaction history</div>
+                <i class="fa-solid fa-angle-right"></i>
             </a>
         </div>
         <div class="settings btn space-btn">
-            country
             {% load countries %}
             {% get_countries as countries %}
-            <div class="select">
-                <select>
-                    {% for country in countries %}
-                    {% if user.profile.country.code == country.code %}
-                    <option selected="selected" value="{{ country.name }}">{{ country.name }}</option>
-                    {% else %}
-                    <option value="{{ country.code }}"> {{ country.name }}</option>
-                    {% endif %}
-                    {% endfor %}
-                </select>
-            </div>
+            <form method="post" action="/country/">
+                {%csrf_token%}
+                <i class="fa-solid fa-angle-down"></i>
+                {{country_form.as_p}}
+                <button type="submit">Update</button>
+            </form>
         </div>
     </div>
 </div>

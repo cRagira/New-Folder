@@ -185,14 +185,15 @@ def fetch_matches():
     collectdata(datetime.datetime.today().date())
 
     t=datetime.datetime.now()
-    if int(t.strftime('%M'))<10:
+    if int(t.strftime('%M')):
         prev=Rate.objects.filter(currency='WLD')[0].value
+        usd=Rate.objects.filter(currency='USD')[0].value
         FixerBackend().update_rates()
         response=requests.get(url=BINANCE_URL,params={'symbol':'WLDUSDT'})
-        value=response.json().get('price')
+        value=decimal.Decimal(response.json().get('price'))*usd
         backend=ExchangeBackend.objects.all().last()
         if value:
-            Rate.objects.create(currency='WLD', value=decimal.Decimal(value), backend=backend)
+            Rate.objects.create(currency='WLD', value=decimal.Decimal(1/value), backend=backend)
         else:
             Rate.objects.create(currency='WLD', value=prev, backend=backend)
         print('tomorrow')

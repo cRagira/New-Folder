@@ -52,14 +52,14 @@ function updateBetslip(element) {
         betslipicon.innerHTML = `<i class="fa-solid fa-file"></i>`;
         $('#submitBtn').attr('disabled')
     }
-    var button=document.getElementById('submitBtn')
-    var amountEl=document.getElementById('amount')
-    if (parseInt(amountEl.value) > parseInt(balance)){
-        amountEl.style.color='red'
-        button.setAttribute('disabled', '')        
+    var button = document.getElementById('submitBtn')
+    var amountEl = document.getElementById('amount')
+    if (parseInt(amountEl.value) > parseInt(balance)) {
+        amountEl.style.color = 'red'
+        button.setAttribute('disabled', '')
     }
-    else{
-        amountEl.style.color='black'
+    else {
+        amountEl.style.color = 'black'
         button.removeAttribute('disabled')
 
     }
@@ -107,12 +107,19 @@ function makeActive(id) {
         else {
             $(this).removeClass('hidden')
         }
-    })
-
-
-        ;
+    });
 }
 
+
+function toggleDisable(element) {
+    button = element.parentElement.nextElementSibling
+    if (element.value != '') {
+        button.removeAttribute('disabled')
+    }
+    else {
+        button.setAttribute('disabled', '')
+    }
+}
 
 
 function showMore(element) {
@@ -135,23 +142,40 @@ function copyContent() {
     // var copyText = document.getElementById("myInput");
     copyText.focus();
     navigator.clipboard
-      .writeText(copyText.innerText)
-      .then(() => {
-        alert("successfully copied");
-      })
-      .catch(() => {
-        alert("something went wrong");
-      });
-      showTrx()
+        .writeText(copyText.innerText)
+        .then(() => {
+            $.toast({
+                heading: 'Success!',
+                text: 'Copied to clipboad',
+                showHideTransition: 'slide',
+                position: 'top-right',
+                hideAfter: 5000,
+                icon: 'success'
+            })
+        })
+        .catch(() => {
+            $.toast({
+                heading: 'Failed!',
+                text: 'Something went wrong',
+                showHideTransition: 'slide',
+                position: 'top-right',
+                hideAfter: 4000,
+                icon: 'error'
+            })
+        });
+    showTrx()
 }
 
 async function pasteContent(element) {
-    let sib=element.previousElementSibling
+    let sib = element.previousElementSibling
     let input = sib.previousElementSibling
+
     try {
         sib.classList.add('hidden')
-        const text = await navigator.clipboard.readText()
-        input.value = text;
+        navigator.clipboard.readText().then(
+            clipText => input.value = clipText);
+        // const text = await navigator.clipboard.readText()
+        // input.value = text;
         console.log('Text pasted.');
     } catch (error) {
         console.log('Failed to read clipboard');
@@ -162,9 +186,20 @@ function showTrx() {
     trx.classList.remove('hidden')
 }
 function showAddr(button) {
-    addr = document.getElementById('addr')
-    addr.classList.remove('hidden')
-    button.classList.add('hidden')
+    let cont=document.createElement('div')
+    let bar=document.createElement('div')
+    bar.setAttribute('id','myBar')
+    cont.appendChild(bar)
+    button.parentNode.replaceChild(cont,button)
+
+    async function show() {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        addr = document.getElementById('addr');
+        addr.classList.remove('hidden');
+        cont.classList.add('hidden');
+      }
+      
+      show();
 
 }
 function hideDeposit() {
@@ -189,19 +224,40 @@ async function checkTrx() {
             timeout: 35000,
         });
         const resp = await response.json();
-        if(await resp['result']==1){
-            alert('deposit successful')
+        if (await resp['result'] == 1) {
+            $.toast({
+                heading: 'success!',
+                text: 'Deposit successfully',
+                showHideTransition: 'slide',
+                position: 'top-right',
+                hideAfter: 5000,
+                icon: 'success'
+            })
         }
-        else{
-            alert('transaction has already been debited')
+        else {
+            $.toast({
+                heading: 'Error!',
+                text: 'This transaction has been recorded',
+                showHideTransition: 'slide',
+                position: 'top-right',
+                hideAfter: 5000,
+                icon: 'warning'
+            })
         }
-        
+
     }
     catch (error) {
         console.log(error)
-        alert('transaction has not reflected,please wait before trying again')
+        $.toast({
+            heading: 'Info!',
+            text: 'transaction has not reflected,please wait before trying again',
+            showHideTransition: 'slide',
+            position: 'top-right',
+            hideAfter: 5000,
+            icon: 'info'
+        })
     }
-    form.innerHTML='<form id="deposit-form" action="/transact/" method="post"><input type="hidden" name="csrfmiddlewaretoken" value="vKSI5zOQiJUMgVMmicjL5VGlNHezfgYjq2QJMXmqDLNSXHCyrCM5xqbqB9w8fBMm"><div class="request"><div class="wrapper addr hidden" id="addr"><span class="address">0XAedzrESssGDZS#442Q</span><div class="copy" onclick="copyContent()"><i class="fa-solid fa-copy"></i> COPY</div></div><div class="hidden" id="trx"><div class="wrapper"><input type="text" name="trxcode" id="trxcode"><span class="hash">enter transaction hash</span><div class="copy" onclick="pasteContent()"><i class="fa-solid fa-clipboard"></i> PASTE</div></div><div><p class="small tut"><i class="fa-regular fa-circle-question"></i>How to find hash</p><button type="button" onclick="checkTrx()">Confirm Deposit</button></div></div><button type="button" onclick="showAddr(this)">request deposit address</button></div>'
+    form.innerHTML = '<form id="deposit-form" action="/transact/" method="post"><input type="hidden" name="csrfmiddlewaretoken" value="vKSI5zOQiJUMgVMmicjL5VGlNHezfgYjq2QJMXmqDLNSXHCyrCM5xqbqB9w8fBMm"><div class="request"><div class="wrapper addr hidden" id="addr"><span class="address">0XAedzrESssGDZS#442Q</span><div class="copy" onclick="copyContent()"><i class="fa-solid fa-copy"></i> COPY</div></div><div class="hidden" id="trx"><div class="wrapper"><input type="text" name="trxcode" id="trxcode"><span class="hash">enter transaction hash</span><div class="copy" onclick="pasteContent()"><i class="fa-solid fa-clipboard"></i> PASTE</div></div><div><p class="small tut"><i class="fa-regular fa-circle-question"></i>How to find hash</p><button type="button" onclick="checkTrx()">Confirm Deposit</button></div></div><button type="button" onclick="showAddr(this)">request deposit address</button></div>'
 }
 async function fetchWithTimeout(resource, options = {}) {
     const { timeout = 35000 } = options;
@@ -211,6 +267,7 @@ async function fetchWithTimeout(resource, options = {}) {
     clearTimeout(id);
     return response
 }
+
 
 
 

@@ -9,13 +9,12 @@ from djmoney.money import Money
 from django_countries.fields import CountryField
 import pycountry
 from djmoney.contrib.exchange.models import convert_money
+from babel.numbers import get_territory_currencies
 
 ref_value=Money(50, 'KES')
 def get_currency(code):
-        country = pycountry.countries.get(alpha_3=code)
-        currency_code = pycountry.currencies.get(numeric=country.numeric)
-        
-        return currency_code.alpha_3
+    currency = get_territory_currencies(code)[0]
+    return currency
 
 def get_referral_id():
     def gen():
@@ -44,7 +43,7 @@ class Profile(models.Model):
     SU= User.objects.filter(is_superuser=True).last().pk
     user=models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     phone=models.CharField(max_length=20)
-    country=CountryField(default='US') #alpha3
+    country=CountryField(default='KE') #alpha3
     referral_id=models.CharField(max_length=6, unique=True)
     referee=models.ForeignKey(User,on_delete=models.SET_DEFAULT, default=SU, related_name='referral', blank=True, null=True)
     total_deposit=MoneyField(max_digits=14, decimal_places=2, default_currency='WLD', default=Money(0,'WLD'))
@@ -63,9 +62,8 @@ class Profile(models.Model):
         self.balance+=cred
         self.total_deposit+=cred
         self.save()
-        minv=Money(99,'KES')
-        dep=convert_money(self.total_deposit, 'KES')
-        if dep > minv:
+        minv=Money(.5,'WLD')
+        if cred > minv:
             self.is_valid = True
 
         transaction=Transaction.objects.create(user=self.user,type='cred',amount=cred)
@@ -94,7 +92,7 @@ class Profile(models.Model):
         transaction.save()
 
     def user_currency(self):
-        currency=get_currency(self.country.alpha3)
+        currency=get_currency(self.country.code)
         return currency
     
     def unredeemed_refs(self):
