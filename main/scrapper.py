@@ -193,6 +193,7 @@ def fetch_matches():
     if int(t.strftime('%M')):
         FixerBackend().update_rates()
         response=requests.get(url=BINANCE_URL,params={'symbol':'WLDUSDT'})
+        print(response)
         value=decimal.Decimal(response.json().get('price'))
         backend=ExchangeBackend.objects.all().last()
         if value:
