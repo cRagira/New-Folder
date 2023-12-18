@@ -1,7 +1,6 @@
 FROM python:3.8.0-slim as builder
 RUN apt-get update \
 && apt-get install gcc -y \
-&& apt-get install chromium -y \
 && apt-get install chromium-chromedriver -y \
 && apt-get clean
 COPY requirements.txt .
@@ -18,3 +17,5 @@ ENV PYTHONDONTWRITEBYTECODE 1
 
 COPY . .
 ENTRYPOINT [ "gunicorn","bet.wsgi" ]
+
+
