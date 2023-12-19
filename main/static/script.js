@@ -233,6 +233,7 @@ async function checkTrx() {
                 hideAfter: 5000,
                 icon: 'success'
             })
+            // TODO update balance
         }
         else {
             $.toast({

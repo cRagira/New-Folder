@@ -190,9 +190,10 @@ def fetch_matches():
     collectdata(datetime.datetime.today().date())
 
     t=datetime.datetime.now()
-    if int(t.strftime('%M')):
+    if int(t.strftime('%M'))<10:
         FixerBackend().update_rates()
         response=requests.get(url=BINANCE_URL,params={'symbol':'WLDUSDT'})
+        print(response.json())
         value=decimal.Decimal(response.json().get('price'))
         backend=ExchangeBackend.objects.all().last()
         if value:
@@ -219,6 +220,3 @@ def fetch_matches():
 
     driver.quit()
         
-
-
-
