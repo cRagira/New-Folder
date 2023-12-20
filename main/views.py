@@ -20,7 +20,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from binance.exceptions import BinanceAPIException
 import os
-from binance.spot import Spot as Client
+from binance.client import Client
 from binance.lib.utils import config_logging
 from dotenv import load_dotenv
 load_dotenv()
@@ -182,9 +182,8 @@ def trx(request):
     else:
         address=form['user-address']
         amount=form['withdraw-amount']
-        print(api_key,api_secret)
         if user.profile.has_withdrawn():
-            spot_client = Client(api_key, api_secret, tld='us')
+            spot_client = Client(api_key, api_secret)
             try:
                 spot_client.withdraw(coin="WLD", amount=amount, address=address, recvWindow=6000)
                 messages.success(request,'Withdrawal Initiated')
