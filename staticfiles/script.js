@@ -149,7 +149,7 @@ function copyContent() {
                 text: 'Copied to clipboad',
                 showHideTransition: 'slide',
                 position: 'top-right',
-                hideAfter: 4000,
+                hideAfter: 5000,
                 icon: 'success'
             })
         })
@@ -230,9 +230,10 @@ async function checkTrx() {
                 text: 'Deposit successfully',
                 showHideTransition: 'slide',
                 position: 'top-right',
-                hideAfter: 4000,
+                hideAfter: 5000,
                 icon: 'success'
             })
+            // TODO update balance
         }
         else {
             $.toast({
@@ -240,7 +241,7 @@ async function checkTrx() {
                 text: 'This transaction has been recorded',
                 showHideTransition: 'slide',
                 position: 'top-right',
-                hideAfter: 4000,
+                hideAfter: 5000,
                 icon: 'warning'
             })
         }
@@ -253,7 +254,7 @@ async function checkTrx() {
             text: 'transaction has not reflected,please wait before trying again',
             showHideTransition: 'slide',
             position: 'top-right',
-            hideAfter: 4000,
+            hideAfter: 5000,
             icon: 'info'
         })
     }

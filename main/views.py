@@ -28,8 +28,6 @@ load_dotenv()
 api_key=os.environ.get('API_KEY')
 api_secret=os.environ.get('API_SECRET')
 
-BINANCE_URL='https://api.binance.us/sapi/v1/capital/withdraw/apply'
-
 
 # Create your views here.
 def home(request):
@@ -186,7 +184,7 @@ def trx(request):
         amount=form['withdraw-amount']
         print(api_key,api_secret)
         if user.profile.has_withdrawn():
-            spot_client = Client(api_key, api_secret)
+            spot_client = Client(api_key, api_secret, tld='us')
             try:
                 spot_client.withdraw(coin="WLD", amount=amount, address=address, recvWindow=6000)
                 messages.success(request,'Withdrawal Initiated')

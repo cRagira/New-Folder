@@ -1,6 +1,6 @@
 import decimal
+import os
 from django.utils import timezone
-import requests
 from selenium import webdriver
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
@@ -15,8 +15,10 @@ from djmoney.contrib.exchange.backends import FixerBackend
 from webdriver_manager.chrome import ChromeDriverManager
 from djmoney.contrib.exchange.models import ExchangeBackend, Rate
 from webdriver_manager.core.os_manager import ChromeType
+from binance.client import Client
+from dotenv import load_dotenv
+load_dotenv()
 
-BINANCE_URL='https://api.binance.us/api/v3/avgPrice'
 
 def fetch_matches():
     options = webdriver.ChromeOptions()
@@ -29,9 +31,9 @@ def fetch_matches():
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("user-data-dir=selenium")
 
-    s = Service(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install())
-    driver = webdriver.Chrome(service=s,options=options)
-    # driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+    # s = Service(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install())
+    # driver = webdriver.Chrome(service=s,options=options)
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
 
 
@@ -189,12 +191,16 @@ def fetch_matches():
 
     collectdata(datetime.datetime.today().date())
 
-    t=datetime.datetime.now()
-    if int(t.strftime('%M'))<10:
-        response=requests.get(url=BINANCE_URL,params={'symbol':'WLDUSDT'})
-        print(response.json())
-        value=decimal.Decimal(response.json().get('price'))
-        backend=ExchangeBackend.objects.all().last()
+###update exchange rates
+    api_key=os.environ.get('API_KEY')
+    api_secret=os.environ.get('API_SECRET')
+
+    backend=ExchangeBackend.objects.all().last()
+    spot_client = Client(api_key, api_secret)
+    try:
+        response=spot_client.avg_price('WLDUSDT')
+        print(response)
+        value=decimal.Decimal(response.get('price'))
         if value:
             FixerBackend().update_rates()
             usd=Rate.objects.filter(currency='USD')[0].value
@@ -205,6 +211,17 @@ def fetch_matches():
             FixerBackend().update_rates()
             Rate.objects.create(currency='WLD', value=prev, backend=backend)
             print('prev')
+    except Exception as e:
+        print(e)
+        prev=Rate.objects.filter(currency='WLD')[0].value
+        FixerBackend().update_rates()
+        Rate.objects.create(currency='WLD', value=prev, backend=backend)
+        print('prev')
+
+
+
+    t=datetime.datetime.now()
+    if int(t.strftime('%M'))<10:
         print('tomorrow')
         tomorrow=driver.find_element(By.XPATH,'//button[@class="calendar__navigation calendar__navigation--tomorrow"]')
         tomorrow.click()
