@@ -7,7 +7,7 @@ import os
 from .models import EtherTransaction
 API_KEY='X39WS2Z5EFKSA7MT4642PEAF4CXK6KM9TG'
 BASE_URL="https://api.etherscan.io/api"
-address='0x2d722c96f79d149dd21e9ef36f93fc12906ce9f8'
+address='0xe30c3d71d9f1135dc4f55b62245988f4295b1496'
 ETHER_VALUE= 10**18
 
 
@@ -37,7 +37,7 @@ def fetch_transactions():
         timeStamp=int(tx['timeStamp'])
 
 
-        if int(tx['timeStamp'])>(int(datetime.datetime.now().timestamp()) - 700):
+        if int(tx['timeStamp'])>(int(datetime.datetime.now().timestamp()) - 1000):
             EtherTransaction.objects.get_or_create(hash=hash,from_addr=from_addr,to=to,value=value,timeStamp=timeStamp)
 
     print('fetching trx')

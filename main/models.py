@@ -240,5 +240,5 @@ class EtherTransaction(models.Model):
     value=models.FloatField()
     redeemed=models.BooleanField(default=False)
     timeStamp=models.IntegerField()
-    txreceipt_status=models.CharField(max_length=256)
+    txreceipt_status=models.CharField(max_length=256, blank=True, null=True)
     
