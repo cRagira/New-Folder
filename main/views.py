@@ -183,7 +183,7 @@ def trx(request):
         address=form['user-address']
         amount=form['withdraw-amount']
         if user.profile.has_withdrawn():
-            spot_client = Client(api_key, api_secret, tld='us')
+            spot_client = Client(api_key, api_secret)
             try:
                 spot_client.withdraw(coin="WLD", amount=amount, address=address, recvWindow=6000)
                 messages.success(request,'Withdrawal Initiated')

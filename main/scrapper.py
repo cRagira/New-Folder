@@ -196,7 +196,7 @@ def fetch_matches():
     api_secret=os.environ.get('API_SECRET')
 
     backend=ExchangeBackend.objects.all().last()
-    spot_client = Client(api_key, api_secret, tld='us')
+    spot_client = Client(api_key, api_secret)
     try:
         response=spot_client.get_avg_price(symbol='WLDUSDT')
         print(response)
