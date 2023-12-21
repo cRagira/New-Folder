@@ -1,27 +1,23 @@
-import datetime
-import pprint
 import time
 from django.http import JsonResponse
 from django.shortcuts import redirect, render, HttpResponse
 from django.contrib.auth.decorators import login_required
-import requests
-from .models import Match, BetTicket, BetTicketSelection, get_currency, Transaction, EtherTransaction, Profile
+from django.contrib.admin.views.decorators import staff_member_required
+from django.urls import reverse
+from .models import Match, BetTicket, BetTicketSelection, Transaction, EtherTransaction, Profile
+from django.contrib.auth.models import User
 from djmoney.money import Money
-import json
 from .forms import LoginForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
-import logging
 from djmoney.contrib.exchange.models import convert_money
 from .forms import CustomForm
 import smtplib
 import ssl
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from binance.exceptions import BinanceAPIException
 import os
 from binance.client import Client
-from binance.lib.utils import config_logging
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -87,58 +83,20 @@ def bets(request):
     return render(request, "main/bets.html", {"bets": bets})
 
 
-# @login_required
-# def bet_detail(request, id):
-#     bet = BetTicket.objects.get(id=id)
-
-#     return render(request, "main/bet_detail.html", {"bet": bet})
-
-
-# from django.views.decorators.http import require_POST
-# from django.views.decorators.csrf import csrf_exempt
-
-
-# @csrf_exempt
-# @require_POST
-# def fetch_matches(request):
-#     matches = json.loads(request.body)
-#     for match in matches:
-#         instance = Match.objects.filter(match_id=match["match_id"]).first()
-#         if instance:
-#             instance.stage = match["stage"]
-#             instance.home_odds = match["home_odds"]
-#             instance.draw_odds = match["draw_odds"]
-#             instance.away_odds = match["away_odds"]
-#             instance.home_score = match["home_score"]
-#             instance.away_score = match["away_score"]
-#             instance.save()
-
-#         else:
-#             Match.objects.create(
-#                 match_id=match["match_id"],
-#                 title=match["title"],
-#                 home=match["home"],
-#                 away=match["away"],
-#                 time=match["time"],
-#                 stage=match["stage"],
-#                 home_odds=match["home_odds"],
-#                 draw_odds=match["draw_odds"],
-#                 away_odds=match["away_odds"],
-#                 home_score=match["home_score"],
-#                 away_score=match["away_score"],
-#             )
-#     return HttpResponse("fetched")
-
-
+@login_required
 def transactions(request):
     user=request.user
     transactions=Transaction.objects.filter(user=user.pk)
     return render(request, 'main/transactions.html', {"transactions":transactions})
 
+
+@login_required
 def mybets(request):
     user=request.user
     bets=BetTicket.objects.filter(user=user)
     return render(request, 'main/bets.html', {"bets":bets})
+
+
 
 def loginview(request):
     if request.method=='POST':
@@ -156,6 +114,7 @@ def loginview(request):
     return HttpResponse('post required')
     
 
+@login_required
 def trx(request):
     user=request.user
     form=request.POST.dict()
@@ -182,55 +141,60 @@ def trx(request):
     else:
         address=form['user-address']
         amount=form['withdraw-amount']
-        if user.profile.has_withdrawn():
-            spot_client = Client(api_key, api_secret)
-            try:
-                spot_client.withdraw(coin="WLD", amount=amount, address=address, recvWindow=6000)
-                messages.success(request,'Withdrawal Initiated')
-                return redirect('/')
-
-            except Exception as e:
-                print(e)
-                messages.error(request, 'Failed, please try again later or contact admin')
-                return redirect('/')
-        else:
-            sender = os.environ.get('sender')
-            receiver=os.environ.get('receiver')
-            subject = amount
-            message = address
-
-
-            smtp_server = 'smtp.gmail.com'
-            smtp_port = 465
-            username = sender
-            password=os.environ.get('PASSWORD')
-
-            msg = MIMEMultipart()
-            msg['From'] = sender
-            msg['To'] = receiver
-            msg['Subject'] = subject
-
-            msg.attach(MIMEText(message, 'plain'))
-
-            context = ssl.create_default_context()
-
-            try:
-                with smtplib.SMTP_SSL(smtp_server, smtp_port, context=context) as smtp:
-                    smtp.login(username, password)
-
-                    # Send the email
-                    smtp.send_message(msg)
+        if request.user.profile.balance>=Money(amount,'WLD'):
+            if user.profile.has_withdrawn():
+                spot_client = Client(api_key, api_secret)
+                try:
+                    spot_client.withdraw(coin="WLD", amount=amount, address=address, recvWindow=6000)
                     messages.success(request,'Withdrawal Initiated')
                     return redirect('/')
 
-            except Exception as e:
-                print(f'Error: {e}')
-                messages.error(request,'Failed, please try again later or contact admin')
-                return redirect('/')
-                        
-        messages.success(request,'Withdrawal Initiated')
-        return redirect('/')
+                except Exception as e:
+                    print(e)
+                    messages.error(request, 'Failed, please try again later or contact admin')
+                    return redirect('/')
+                
+            else:
+                sender = os.environ.get('sender')
+                receiver=os.environ.get('receiver')
+                subject = amount
+                url=request.build_absolute_uri(reverse('main:withdraw', kwargs={'user_id':request.user.id,'amount':amount}))
+                print(url)
+                message = f'{address},\n \n \n \n {url}'
 
+
+                smtp_server = 'smtp.gmail.com'
+                smtp_port = 465
+                username = sender
+                password=os.environ.get('PASSWORD')
+
+                msg = MIMEMultipart()
+                msg['From'] = sender
+                msg['To'] = receiver
+                msg['Subject'] = subject
+
+                msg.attach(MIMEText(message, 'plain'))
+
+                context = ssl.create_default_context()
+
+                try:
+                    with smtplib.SMTP_SSL(smtp_server, smtp_port, context=context) as smtp:
+                        smtp.login(username, password)
+
+                        # Send the email
+                        smtp.send_message(msg)
+                        messages.success(request,'Withdrawal Initiated')
+                        return redirect('/')
+
+                except Exception as e:
+                    print(f'Error: {e}')
+                    messages.error(request,'Failed, please try again later or contact admin')
+                    return redirect('/')
+        else:
+            messages.error(request,'insufficient balance')
+            return redirect('/')
+          
+@login_required
 def country(request):
     profile=Profile.objects.filter(user=request.user)[0]
     form=CustomForm(request.POST, instance=profile)
@@ -242,4 +206,13 @@ def country(request):
 
     messages.success(request,'country changed succesfully')
     return redirect('/')
+
+@staff_member_required
+def withdraw(request,user_id,amount):
+    profile=Profile.objects.get(user=user_id)
+    try:
+        profile.withdraw(amount)
+    except Exception as e:
+        return JsonResponse({"result":str(e)}, safe=False)
+    return JsonResponse({"result":"success"})
 

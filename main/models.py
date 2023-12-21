@@ -86,10 +86,14 @@ class Profile(models.Model):
         transaction.save()
 
     def withdraw(self,amount):
-        self.balance-=Money(amount,'WLD')
-        self.save()
-        transaction=Transaction.objects.create(user=self.user,type='with',amount=Money(amount,'WLD'))
-        transaction.save()
+        if self.balance>=Money(amount,'WLD'):
+            self.balance-=Money(amount,'WLD')
+            self.save()
+            transaction=Transaction.objects.create(user=self.user,type='with',amount=Money(amount,'WLD'))
+            #TODO trx hash
+            transaction.save()
+        else:
+            raise ValueError('Insufficient balance')
 
     def user_currency(self):
         currency=get_currency(self.country.code)
