@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
-python teleg.py
-gunicorn bet.wsgi
+
+python teleg.py & gunicorn bet.wsgi && fg
