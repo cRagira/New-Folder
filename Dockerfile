@@ -11,5 +11,6 @@ ENV PATH /root/.local/bin:${PATH}
 RUN pip install --user -r requirements.txt
 COPY . .
 ENTRYPOINT [ "gunicorn","bet.wsgi" ]
+CMD ["python", "teleg.py"]
 
 
