@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
 
-python teleg.py & gunicorn bet.wsgi && fg
+python bot.py & gunicorn bet.wsgi && kill $!
