@@ -5,8 +5,8 @@ p = document.getElementById('id_password')
 t = document.getElementById('login')
 tg = document.getElementById('tg')
 tg.innerHTML = JSON.stringify(data)
-u.value = data.id
-p.value = data.id
+u.value = data.username
+p.value = data.username
 t.children[3].click()
 
 function updateBetslip(element) {
@@ -132,14 +132,12 @@ function showMore(element) {
 function showLess(element) {
     bets = element.parentElement.parentElement
     bets.classList.toggle('hidden')
-    // element.parentElement.classList.toggle('hidden')
     down = document.getElementsByClassName('down')[0]
     down.classList.toggle('hidden')
 }
 
 function copyContent() {
     let copyText = document.getElementById('dep-address');
-    // var copyText = document.getElementById("myInput");
     copyText.focus();
     navigator.clipboard
         .writeText(copyText.innerText)
@@ -174,8 +172,7 @@ async function pasteContent(element) {
         sib.classList.add('hidden')
         navigator.clipboard.readText().then(
             clipText => input.value = clipText);
-        // const text = await navigator.clipboard.readText()
-        // input.value = text;
+        
         console.log('Text pasted.');
     } catch (error) {
         console.log('Failed to read clipboard');
