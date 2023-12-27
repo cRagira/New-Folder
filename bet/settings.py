@@ -17,7 +17,7 @@ import moneyed
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-DATABASE_URL='postgresql://postgres:E-be4-aFABCa6gFe*-C51a5FE2aeBdgF@roundhouse.proxy.rlwy.net:33877/railway'
+DATABASE_URL='postgres://new_folder_user:WUrDotFscb954FKa65QToaW1gwUFpiNb@dpg-cm66ccud3nmc73ap87tg-a.frankfurt-postgres.render.com/new_folder'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -81,11 +81,11 @@ WSGI_APPLICATION = 'bet.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-    # 'default':dj_database_url.config(default=DATABASE_URL, conn_max_age=5000),
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
+    # }
+    'default':dj_database_url.config(default=DATABASE_URL, conn_max_age=5000),
 }
 
 CSRF_TRUSTED_ORIGINS=[]

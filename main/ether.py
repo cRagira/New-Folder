@@ -28,7 +28,6 @@ def fetch_transactions():
         response=requests.get(transaction_url)
         transactions=response.json()['result']
         data.extend(transactions)
-    print(data)
     data.sort(key=lambda x: int(x['timeStamp']))
     
 

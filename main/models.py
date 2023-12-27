@@ -41,11 +41,11 @@ def save_user_profile(sender, instance, **kwargs):
 class Profile(models.Model):
 
     SU= User.objects.filter(is_superuser=True).last().pk
+    referee=models.ForeignKey(User,on_delete=models.SET_DEFAULT, default=SU, related_name='referral', blank=True, null=True)
     user=models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     phone=models.CharField(max_length=20)
     country=CountryField(default='KE') #alpha3
     referral_id=models.CharField(max_length=6)
-    referee=models.ForeignKey(User,on_delete=models.SET_DEFAULT, default=SU, related_name='referral', blank=True, null=True)
     total_deposit=MoneyField(max_digits=14, decimal_places=2, default_currency='WLD', default=Money(0,'WLD'))
     is_valid = models.BooleanField(default=False)
     balance=MoneyField(max_digits=14, decimal_places=2, default_currency='WLD', default=Money(0,'WLD'))

@@ -1,15 +1,6 @@
 Telegram.WebApp.expand()
-Telegram.WebApp.BackButton.show()
-Telegram.WebApp.BackButton.onClick(window.history.go(-1))
 Telegram.WebApp.ready()
-u = document.getElementById('id_username')
-p = document.getElementById('id_password')
-t = document.getElementById('login')
-tg = document.getElementById('tg')
-tg.innerHTML = JSON.stringify(data)
-u.value = data.username
-p.value = data.username
-t.children[3].click()
+
 
 function updateBetslip(element) {
     var checked = document.querySelectorAll("input[type=checkbox]:checked");
