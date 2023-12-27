@@ -1,4 +1,6 @@
 Telegram.WebApp.expand()
+Telegram.WebApp.BackButton.show()
+Telegram.WebApp.BackButton.onClick(window.history.go(-1))
 Telegram.WebApp.ready()
 u = document.getElementById('id_username')
 p = document.getElementById('id_password')

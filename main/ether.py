@@ -1,4 +1,3 @@
-import pprint
 import requests
 import datetime
 import django

@@ -29,7 +29,6 @@ api_secret=os.environ.get('API_SECRET')
 def home(request):
     if request.method == "POST":
         dict = request.POST.dict()
-        print(dict)
         dict.pop("csrfmiddlewaretoken")
         amount = Money(int(dict.pop("amount")),request.user.profile.user_currency())
         wld=convert_money(amount,'WLD')
@@ -118,7 +117,6 @@ def loginview(request):
 def trx(request):
     user=request.user
     form=request.POST.dict()
-    print(form)
     form.pop('csrfmiddlewaretoken')
     count=0
     if form.get('trxcode'):

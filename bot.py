@@ -293,13 +293,12 @@ def get_number(message):
             user.profile.image.save(f"image_{user.pk}", File(img_temp))
         phone=message.contact.phone_number
         user.profile.phone = phone
-        print(phone)
         user.last_login = datetime.now(pytz.utc)
        
         pn = phonenumbers.parse(f'+{phone}') 
         
-        user.profile.country = geocoder.description_for_number(pn, "en") 
-
+        country = pycountry.countries.search_fuzzy(geocoder.description_for_number(pn, "en"))
+        user.profile.country=country[0].alpha_3
         user.save()
 
     message = bot.send_message(message.chat.id, f"Welcome to Telebets {user.username}!")
@@ -386,8 +385,6 @@ def answer_callback(query):
         country = data.split("-")[1]
         user.profile.country = country
         currency = get_territory_currencies(user.profile.country.code)[0]
-        user.profile.balance = convert_money(user.profile.balance, currency)
-        user.profile.total_deposit = convert_money(user.profile.total_deposit, currency)
         user.save()
         bot.answer_callback_query(query.id, "successfully changed")
         landing(query.message)

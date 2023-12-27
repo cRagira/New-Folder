@@ -206,18 +206,15 @@ def fetch_matches():
             FixerBackend().update_rates()
             usd=Rate.objects.filter(currency='USD')[0].value
             Rate.objects.create(currency='WLD', value=1/(value/usd), backend=backend)
-            print('new')
         else:
             prev=Rate.objects.filter(currency='WLD')[0].value
             FixerBackend().update_rates()
             Rate.objects.create(currency='WLD', value=prev, backend=backend)
-            print('prev')
     except Exception as e:
         print(e)
         prev=Rate.objects.filter(currency='WLD')[0].value
         FixerBackend().update_rates()
         Rate.objects.create(currency='WLD', value=prev, backend=backend)
-        print('prev')
 
 
 
