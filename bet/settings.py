@@ -17,13 +17,13 @@ import moneyed
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-DATABASE_URL='postgres://new_folder_user:WUrDotFscb954FKa65QToaW1gwUFpiNb@dpg-cm66ccud3nmc73ap87tg-a.frankfurt-postgres.render.com/new_folder'
+DATABASE_URL=os.environ.get('DB_URL')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-nogn_j7o((x#eb&_8$r@k$_cg7tg=en&5m!fu48_xjs*$jbd28'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True

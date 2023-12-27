@@ -37,7 +37,7 @@ api_secret = os.environ.get("API_SECRET")
 wldAddress = "0xbc0367e2fd8885ccfbb1032f3ceb7905378e8e5e"
 
 
-API_TOKEN = "6346891549:AAEY4mP5lsg4dB4xEpJgXaQ9hw3VykC4usY"
+API_TOKEN = os.environ.get("API_TOKEN")
 bot = telebot.TeleBot(API_TOKEN)
 
 
@@ -47,7 +47,7 @@ def landing(message):
     keyboard.row(
         telebot.types.InlineKeyboardButton(
             "Open App",
-            web_app=types.WebAppInfo("https://new-folder-production.up.railway.app/"),
+            web_app=types.WebAppInfo("https://new-folder.onrender.com/"),
         )
     )
     keyboard.row(
