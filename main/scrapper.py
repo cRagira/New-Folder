@@ -17,8 +17,9 @@ from webdriver_manager.chrome import ChromeDriverManager
 from djmoney.contrib.exchange.models import ExchangeBackend, Rate
 from webdriver_manager.core.os_manager import ChromeType
 from binance.client import Client
-from dotenv import load_dotenv
-load_dotenv()
+from dotenv import load_dotenv,find_dotenv
+import sys
+load_dotenv(find_dotenv(sys.path[0]+'/main/.env'))
 
 
 def fetch_matches():

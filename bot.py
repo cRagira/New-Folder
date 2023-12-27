@@ -28,9 +28,10 @@ from django.core.files import File
 from urllib.request import urlopen
 from tempfile import NamedTemporaryFile
 
-from dotenv import load_dotenv
+from dotenv import load_dotenv,find_dotenv
+import sys
 
-load_dotenv()
+load_dotenv(find_dotenv(sys.path[0]+'/main/.env'))
 
 api_key = os.environ.get("API_KEY")
 api_secret = os.environ.get("API_SECRET")
@@ -300,8 +301,8 @@ def get_number(message):
         country = pycountry.countries.search_fuzzy(geocoder.description_for_number(pn, "en"))
         user.profile.country=country[0].alpha_3
         user.save()
-
-    message = bot.send_message(message.chat.id, f"Welcome to Telebets {user.username}!")
+    markup=types.ReplyKeyboardRemove(remove_keyboard=True)
+    message = bot.send_message(message.chat.id, f"Welcome to Telebets {user.username}!", reply_markup=markup)
     landing(message)
 
 

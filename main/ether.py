@@ -2,8 +2,9 @@ import requests
 import datetime
 import django
 import os
-from dotenv import load_dotenv
-load_dotenv()
+from dotenv import load_dotenv, find_dotenv
+import sys
+load_dotenv(find_dotenv(sys.path[0]+'/main/.env'))
 
 from .models import EtherTransaction
 API_KEY=os.environ.get('OPTIMISM_KEY')

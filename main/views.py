@@ -18,8 +18,9 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import os
 from binance.client import Client
-from dotenv import load_dotenv
-load_dotenv()
+from dotenv import load_dotenv, find_dotenv
+import sys
+load_dotenv(find_dotenv(sys.path[0]+'/main/.env'))
 
 api_key=os.environ.get('API_KEY')
 api_secret=os.environ.get('API_SECRET')
