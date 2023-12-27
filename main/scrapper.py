@@ -22,6 +22,47 @@ load_dotenv()
 
 
 def fetch_matches():
+
+    ###update exchange rates
+    api_key=os.environ.get('API_KEY')
+    api_secret=os.environ.get('API_SECRET')
+
+    backend=ExchangeBackend.objects.all().last()
+    spot_client = Client(api_key, api_secret)
+    try:
+        response=spot_client.get_avg_price(symbol='WLDUSDT')
+        print(response)
+        value=decimal.Decimal(response.get('price'))
+        if value:
+            FixerBackend().update_rates()
+            usd=Rate.objects.filter(currency='USD')[0].value
+            Rate.objects.create(currency='WLD', value=1/(value/usd), backend=backend)
+        else:
+            prev=Rate.objects.filter(currency='WLD')[0].value
+            FixerBackend().update_rates()
+            Rate.objects.create(currency='WLD', value=prev, backend=backend)
+    except Exception as e:
+        print(e)
+        prev=Rate.objects.filter(currency='WLD')[0].value
+        FixerBackend().update_rates()
+        Rate.objects.create(currency='WLD', value=prev, backend=backend)
+
+
+
+    t=datetime.datetime.now()
+    if int(t.strftime('%M'))<10:
+        print('tomorrow')
+        tomorrow=driver.find_element(By.XPATH,'//button[@class="calendar__navigation calendar__navigation--tomorrow"]')
+        tomorrow.click()
+        time.sleep(5)
+
+        collectdata((datetime.date.today() + datetime.timedelta(days=1)))
+
+        if int(t.strftime('%H'))<1:
+            Match.objects.filter(created__lt=Now()-datetime.timedelta(days=28)).delete()
+
+
+            
     options = webdriver.ChromeOptions()
 
     url = 'https://flashscore.co.ke'
@@ -192,43 +233,7 @@ def fetch_matches():
 
     collectdata(datetime.datetime.today().date())
 
-###update exchange rates
-    api_key=os.environ.get('API_KEY')
-    api_secret=os.environ.get('API_SECRET')
 
-    backend=ExchangeBackend.objects.all().last()
-    spot_client = Client(api_key, api_secret)
-    try:
-        response=spot_client.get_avg_price(symbol='WLDUSDT')
-        print(response)
-        value=decimal.Decimal(response.get('price'))
-        if value:
-            FixerBackend().update_rates()
-            usd=Rate.objects.filter(currency='USD')[0].value
-            Rate.objects.create(currency='WLD', value=1/(value/usd), backend=backend)
-        else:
-            prev=Rate.objects.filter(currency='WLD')[0].value
-            FixerBackend().update_rates()
-            Rate.objects.create(currency='WLD', value=prev, backend=backend)
-    except Exception as e:
-        print(e)
-        prev=Rate.objects.filter(currency='WLD')[0].value
-        FixerBackend().update_rates()
-        Rate.objects.create(currency='WLD', value=prev, backend=backend)
-
-
-
-    t=datetime.datetime.now()
-    if int(t.strftime('%M'))<10:
-        print('tomorrow')
-        tomorrow=driver.find_element(By.XPATH,'//button[@class="calendar__navigation calendar__navigation--tomorrow"]')
-        tomorrow.click()
-        time.sleep(5)
-
-        collectdata((datetime.date.today() + datetime.timedelta(days=1)))
-
-        if int(t.strftime('%H'))<1:
-            Match.objects.filter(created__lt=Now()-datetime.timedelta(days=28)).delete()
             
 
 
