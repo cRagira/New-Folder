@@ -49,25 +49,16 @@ def fetch_matches():
 
 
 
-    t=datetime.datetime.now()
-    if int(t.strftime('%M'))<10:
-        print('tomorrow')
-        tomorrow=driver.find_element(By.XPATH,'//button[@class="calendar__navigation calendar__navigation--tomorrow"]')
-        tomorrow.click()
-        time.sleep(5)
-
-        collectdata((datetime.date.today() + datetime.timedelta(days=1)))
-
-        if int(t.strftime('%H'))<1:
-            Match.objects.filter(created__lt=Now()-datetime.timedelta(days=28)).delete()
+    
 
 
-            
+
     options = webdriver.ChromeOptions()
 
     url = 'https://flashscore.co.ke'
 
     # options.add_argument("--start-maximized")
+    options.add_argument("--disable-gpu")
     options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
@@ -233,6 +224,17 @@ def fetch_matches():
 
     collectdata(datetime.datetime.today().date())
 
+    t=datetime.datetime.now()
+    if int(t.strftime('%M'))<10:
+        print('tomorrow')
+        tomorrow=driver.find_element(By.XPATH,'//button[@class="calendar__navigation calendar__navigation--tomorrow"]')
+        tomorrow.click()
+        time.sleep(5)
+
+        collectdata((datetime.date.today() + datetime.timedelta(days=1)))
+
+        if int(t.strftime('%H'))<1:
+            Match.objects.filter(created__lt=Now()-datetime.timedelta(days=28)).delete()
 
             
 
