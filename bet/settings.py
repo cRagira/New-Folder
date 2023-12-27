@@ -26,7 +26,7 @@ DATABASE_URL='postgresql://postgres:E-be4-aFABCa6gFe*-C51a5FE2aeBdgF@roundhouse.
 SECRET_KEY = 'django-insecure-nogn_j7o((x#eb&_8$r@k$_cg7tg=en&5m!fu48_xjs*$jbd28'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
