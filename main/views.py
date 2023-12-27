@@ -136,7 +136,7 @@ def trx(request):
                     tx.save()
                     return JsonResponse({'result':1,'value':tx.value})
                 else:
-                    return JsonResponse({'result':2})
+                    return JsonResponse({'result':0})
         return JsonResponse({'result':0})
     else:
         address=form['user-address']

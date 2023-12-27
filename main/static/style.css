@@ -379,7 +379,6 @@ selections {
     position: absolute;
     padding-left: 2rem;
     top: 1rem;
-    width: 100%;
     right: 5px;
     text-align: end;
 
@@ -389,16 +388,22 @@ selections {
 #user-address {
     text-align: left;
     padding-left: 1rem;
+    font-size: .6rem;
+    font-weight: bold;
+    text-align: left;
 }
 
 .hash,
 .enter-address {
     position: absolute;
     top: 1rem;
+    pointer-events: none;
 }
 
 .address {
     margin: 0 !important;
+    font-size: .6rem;
+    font-weight: bold;
 }
 
 .small {

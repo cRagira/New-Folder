@@ -43,6 +43,7 @@ def fetch_transactions():
 
         if value>0 and to==address:#received
             if int(tx['timeStamp'])>(int(datetime.datetime.now().timestamp()) - 1000):
+            # if t:
                 EtherTransaction.objects.get_or_create(hash=hash,from_addr=from_addr,to=to,value=value,timeStamp=timeStamp)
             # print(f'hash={hash},from_addr={from_addr},to={to},value={value},timeStamp={timeStamp}')
 

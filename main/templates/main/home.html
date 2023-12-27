@@ -84,7 +84,7 @@
     </div>
     <div class="balances space-btn">
         <div class="main-balance center"><i class="fa-solid fa-wallet"></i>
-            <div class="column"><span>Balance</span>WLD {{user.profile.balance.amount}} <span
+            <div class="column"><span>Balance</span><p>WLD {{user.profile.balance.amount | floatformat:2}}</p> <span
                     class="small">{{user.profile.user_currency}} {{user.profile.get_balance}}</span></div>
         </div>
         <div class="referral-balance center"><i class="fa-solid fa-people-group"></i>
@@ -106,7 +106,7 @@
                     </div>
                     <div class="hidden" id="trx">
                         <div class="wrapper">
-                            <input type="text" name="trxcode" id="trxcode">
+                            <input type="text" name="trxcode" id="trxcode" onfocus="hideSpan(this)" onfocusout="showSpan(this)">
                             <span class="hash">enter transaction hash</span>
                             <div class="copy" onclick="pasteContent(this)">
                                 <i class="fa-solid fa-clipboard"></i> PASTE
@@ -129,7 +129,7 @@
             <form action="{% url 'main:trx' %}" method="post">
                 {%csrf_token%}
                 <div class="wrapper">
-                    <input type="text" name="user-address" id="user-address">
+                    <input type="text" name="user-address" id="user-address"  onfocus="hideSpan(this)" onfocusout="showSpan(this)">
                     <span class="enter-address">enter worldcoin address</span>
                     <div class="copy" onclick="pasteContent(this)">
                         <i class="fa-solid fa-clipboard"></i> PASTE

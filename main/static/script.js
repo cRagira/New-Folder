@@ -132,14 +132,12 @@ function showMore(element) {
 function showLess(element) {
     bets = element.parentElement.parentElement
     bets.classList.toggle('hidden')
-    // element.parentElement.classList.toggle('hidden')
     down = document.getElementsByClassName('down')[0]
     down.classList.toggle('hidden')
 }
 
 function copyContent() {
     let copyText = document.getElementById('dep-address');
-    // var copyText = document.getElementById("myInput");
     copyText.focus();
     navigator.clipboard
         .writeText(copyText.innerText)
@@ -174,8 +172,7 @@ async function pasteContent(element) {
         sib.classList.add('hidden')
         navigator.clipboard.readText().then(
             clipText => input.value = clipText);
-        // const text = await navigator.clipboard.readText()
-        // input.value = text;
+        
         console.log('Text pasted.');
     } catch (error) {
         console.log('Failed to read clipboard');
@@ -185,21 +182,32 @@ function showTrx() {
     trx = document.getElementById('trx')
     trx.classList.remove('hidden')
 }
+function updateBalances(deposit) {
+    let betslip_balance = document.getElementsByClassName('account-balance')[0]
+    let main_balance_WLD = document.getElementsByClassName('main-balance')[0].children[1].children[1]
+    let main_balance_local = document.getElementsByClassName('main-balance')[0].children[1].children[2]
+    let local = main_balance_local.innerText.split(' ')[0]
+    let exchrate = parseFloat(main_balance_local.innerText.split(' ')[1]) / parseFloat(main_balance_WLD.innerText.split(' ')[1])
+    main_balance_WLD.innerText = `WLD ${(parseFloat(main_balance_WLD.innerText.split(' ')[1]) + deposit).toFixed(2)}`
+    betslip_balance.innerText = `${local} ${(parseFloat(betslip_balance.innerText.split(' ')[1]) + deposit * exchrate).toFixed(2)}`
+    main_balance_local.innerText = betslip_balance.innerText
+}
+
 function showAddr(button) {
-    let cont=document.createElement('div')
-    let bar=document.createElement('div')
-    bar.setAttribute('id','myBar')
+    let cont = document.createElement('div')
+    let bar = document.createElement('div')
+    bar.setAttribute('id', 'myBar')
     cont.appendChild(bar)
-    button.parentNode.replaceChild(cont,button)
+    button.parentNode.replaceChild(cont, button)
 
     async function show() {
         await new Promise(resolve => setTimeout(resolve, 1000));
         addr = document.getElementById('addr');
         addr.classList.remove('hidden');
         cont.classList.add('hidden');
-      }
-      
-      show();
+    }
+
+    show();
 
 }
 function hideDeposit() {
@@ -233,7 +241,8 @@ async function checkTrx() {
                 hideAfter: 5000,
                 icon: 'success'
             })
-            // TODO update balance
+            console.log(resp['value'])
+            updateBalances(resp['value'])
         }
         else {
             $.toast({
@@ -270,6 +279,16 @@ async function fetchWithTimeout(resource, options = {}) {
 }
 
 
+
+
+function hideSpan(element){
+    let sib = element.nextElementSibling
+    sib.classList.add('hidden')
+}
+function showSpan(element){
+    let sib = element.nextElementSibling
+    sib.classList.remove('hidden')
+}
 
 
 

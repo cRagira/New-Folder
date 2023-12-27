@@ -7,6 +7,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.actions.wheel_input import ScrollOrigin
 from bs4 import BeautifulSoup
 import time
+from django.db.models.functions import Now
 import datetime
 from selenium.webdriver.chrome.service import Service
 import json
@@ -31,9 +32,9 @@ def fetch_matches():
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("user-data-dir=selenium")
 
-    s = Service(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install())
-    driver = webdriver.Chrome(service=s,options=options)
-    # driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+    # s = Service(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install())
+    # driver = webdriver.Chrome(service=s,options=options)
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
 
 
@@ -228,6 +229,10 @@ def fetch_matches():
         time.sleep(5)
 
         collectdata((datetime.date.today() + datetime.timedelta(days=1)))
+
+        if int(t.strftime('%H'))<1:
+            Match.objects.filter(created__lt=Now()-datetime.timedelta(days=28)).delete()
+            
 
 
 

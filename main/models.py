@@ -52,6 +52,7 @@ class Profile(models.Model):
     bonus=MoneyField(max_digits=14, decimal_places=2, default_currency='WLD', default=Money(0,'WLD'))
     redeem=models.IntegerField(default=0)
     image=models.ImageField(blank=True, upload_to='uploads/dp/',null=True, default='default.png')
+    address=models.CharField(max_length=256, blank=True, null=True)
 
     def get_balance(self):
         balance= convert_money(self.balance,self.user_currency())
@@ -152,7 +153,7 @@ class Match(models.Model):
     home_score = models.IntegerField(null=True, blank=True)
     away_score = models.IntegerField(null=True, blank=True)    
     outcome = models.CharField(max_length=4, choices=resultChoices.choices, default=resultChoices.PENDING)
-    created = models.DateTimeField(auto_now_add=True)
+    created = models.DateTimeField(auto_now_add=True, db_index=True)
 
     
     def __str__(self):

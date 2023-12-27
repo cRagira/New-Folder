@@ -25,6 +25,7 @@ lxml==4.9.3
 multidict==6.0.4
 outcome==1.2.0
 packaging==23.2
+phonenumbers==8.13.27
 pilkit==2.0
 Pillow==10.0.0
 psycopg2-binary==2.9.9
