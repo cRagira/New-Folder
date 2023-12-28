@@ -1,6 +1,13 @@
 Telegram.WebApp.expand()
 Telegram.WebApp.ready()
-
+u = document.getElementById('id_username')
+p = document.getElementById('id_password')
+t = document.getElementById('login')
+tg = document.getElementById('tg')
+tg.innerHTML = JSON.stringify(data)
+u.value = data.username
+p.value = data.username
+t.children[3].click()
 
 function updateBetslip(element) {
     var checked = document.querySelectorAll("input[type=checkbox]:checked");
@@ -234,7 +241,6 @@ async function checkTrx() {
                 hideAfter: 5000,
                 icon: 'success'
             })
-            console.log(resp['value'])
             updateBalances(resp['value'])
         }
         else {
@@ -250,7 +256,6 @@ async function checkTrx() {
 
     }
     catch (error) {
-        console.log(error)
         $.toast({
             heading: 'Info!',
             text: 'transaction has not reflected,please wait before trying again',
@@ -283,6 +288,16 @@ function showSpan(element){
     sib.classList.remove('hidden')
 }
 
+function hideSearch(){
+    search=document.getElementById('search-input')
+    search.classList.add('hidden')
+    search.children[0].value=''
+}
+function showSearch(){
+    search=document.getElementById('search-input')
+    search.classList.remove('hidden')
+    search.children[0].focus()
+}
 
 
 

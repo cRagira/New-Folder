@@ -13,7 +13,7 @@
         <div class="games nav" id="games">
             {% for match in matches %}
 
-            <div class="container">
+            <div class="container" id="{{match.match_id}}">
                 <span class="time">{{match.time|date:"M d, h:i a"}}</span>
                 <div class="content">
                     <div class="teams">
@@ -113,7 +113,16 @@
                             </div>
                         </div>
                         <div>
-                            <p class="small tut"><i class="fa-regular fa-circle-question"></i>How to find hash</p>
+                            <p class="small tut" onclick="toggleInstructions()"><i class="fa-regular fa-circle-question"></i>How to find hash</p>
+                            <div class="instructions hidden" id="instructions">
+                                <ul>
+                                    <li>Open the WorldApp</li>
+                                    <li>Go to Wallet</li>
+                                    <li>Click on history icon</li>
+                                    <li>Find the transaction</li>
+                                    <li>Click on details</li>
+                                </ul>
+                            </div>
                             <button type="button" onclick="checkTrx()">Confirm Deposit</button>
                         </div>
                     </div>

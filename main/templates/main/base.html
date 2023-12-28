@@ -10,13 +10,38 @@
     <link rel="stylesheet" href="{% static 'style.css' %}">
     <script src="https://kit.fontawesome.com/d48fb8605a.js" crossorigin="anonymous" defer></script>
     <link rel="stylesheet" href="{% static 'jquery.toast.css' %}">
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="{% static 'jquery.toast.js' %}"></script>
+    <script src="{% static 'trigram.js' %}"></script>
 
 
 </head>
 
 <body>
+    <div class="searchbar">
+        <div class="bar space-btn">
+            <p class="logo-container">
+                {% if logo %}
+                <img class="logo" style="transform: rotate(-0.25turn);" src="{% static 'wld.png' %}" alt="">WorldBet
+                {% else %}
+                <span class="logo"><a href="/"><i class="fa-solid fa-angle-left" aria-hidden="true"></i></a></span>
+                {% endif %}
+            </p>
+            {%block page%}
+            {%endblock%}
+            {% if logo %}
+            <i class="fa-solid fa-magnifying-glass" onclick="showSearch()"></i>
+            {% else %}
+            <i class="fa-solid fa-magnifying-glass" style="visibility: hidden;"></i>
+
+            {%endif%}
+        </div>
+        <div class="search-input hidden" id="search-input">
+            <input type="text" id="search">
+            <i class="fa-solid fa-xmark" onclick="hideSearch()"></i>
+        </div>
+    </div>
     {% if request.user.is_authenticated %}
     {% block content %}
 
@@ -29,13 +54,74 @@
         <input type="submit" value="submit" class="hidden">
     </form>
     <div class="" id="tg"></div>
-   
+
     {% endif %}
     <script type="text/javascript">
         var currency = "{{user.profile.user_currency}}";
         var balance = "{{user.profile.get_balance}}";
         var decoded = decodeURIComponent(window.Telegram.WebApp.initData);
         var arr = decoded.split('&');
+        var input = []
+        var ids = []
+        var all = document.getElementsByClassName('container')
+        for (let index = 0; index < all.length; index++) {
+            var homet = (all[index].children[1].children[0].children[0].textContent.trim() + '-' + index).toUpperCase();
+            var awayt = (all[index].children[1].children[0].children[1].textContent.trim() + '-' + index).toUpperCase();
+            ids.push(index + '-' + all[index].id)
+            input.push(homet);
+            input.push(awayt);
+        }
+        var trigram = TrigramIndex(input);
+        var searchElem = document.getElementById("search");
+        searchElem.onkeyup = function () {
+            var all = document.getElementsByClassName('container')
+            for (let index = 0; index < all.length; index++) {
+                all[index].classList.remove('hidden');
+                all[index].classList.add('hidden')
+
+            }
+
+            var phrase = searchElem.value;
+            var result = trigram.find(phrase.toUpperCase());
+            var hits = []
+            var currentMatch = 0;
+            var levelsPicked = 0;
+            var results = 0;
+            for (var i in result) {
+                results += 1;
+                if (result[i].matches != currentMatch) {
+                    if (results > 5 || (results > 3 && result[i].matches <= 2)) break;
+                    currentMatch = result[i].matches;
+                }
+                hits.push(result[i].phrase);
+            }
+            hitIds = []
+            if (hits.length > 0) {
+                hits.forEach(hit => {
+                    ids.forEach(id => {
+                        data = id.split('-')
+                        if (data[0] == hit.split('-')[1]) {
+                            // hitIds.push(data[1])
+                            elm = document.getElementById(data[1])
+                            elm.classList.remove('hidden')
+                        }
+                    });
+
+                });
+
+            } else {
+                for (let index = 0; index < all.length; index++) {
+                    all[index].classList.remove('hidden');
+                }
+
+            }
+            // let difference = input.filter(x => !hits.includes(x));
+            // difference.forEach(id => {
+            //     console.log(id)
+            //     element=document.getElementById(id.split(' ')[1])
+            //     element.classList.add(hidden)                
+            // });
+        };
         var data = JSON.parse(arr[1].split('=')[1]);
         // var data = { id: "admin" }
     </script>

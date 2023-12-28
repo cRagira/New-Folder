@@ -301,7 +301,7 @@ def get_number(message):
         country = pycountry.countries.search_fuzzy(geocoder.description_for_number(pn, "en"))
         user.profile.country=country[0].alpha_3
         user.save()
-    markup=types.ReplyKeyboardRemove(remove_keyboard=True)
+    markup=types.ReplyKeyboardRemove()
     message = bot.send_message(message.chat.id, f"Welcome to Telebets {user.username}!", reply_markup=markup)
     landing(message)
 

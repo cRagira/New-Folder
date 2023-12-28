@@ -28,6 +28,7 @@ api_secret=os.environ.get('API_SECRET')
 
 # Create your views here.
 def home(request):
+    print(request.META.get('HTTP_REFERER'))
     if request.method == "POST":
         dict = request.POST.dict()
         dict.pop("csrfmiddlewaretoken")
@@ -73,28 +74,28 @@ def home(request):
     else:
         country_form=CustomForm()
 
-    return render(request, "main/home.html", context={"matches": matches, "user": user, "form":form,'country_form':country_form})
+    return render(request, "main/home.html", context={"matches": matches, "user": user, "form":form,'country_form':country_form,"logo":True})
 
 
 @login_required
 def bets(request):
     bets = BetTicket.objects.filter(user=request.user.id)
 
-    return render(request, "main/bets.html", {"bets": bets})
+    return render(request, "main/bets.html", {"bets": bets, "logo":False})
 
 
 @login_required
 def transactions(request):
     user=request.user
     transactions=Transaction.objects.filter(user=user.pk)
-    return render(request, 'main/transactions.html', {"transactions":transactions})
+    return render(request, 'main/transactions.html', {"transactions":transactions, "logo":False})
 
 
 @login_required
 def mybets(request):
     user=request.user
     bets=BetTicket.objects.filter(user=user)
-    return render(request, 'main/bets.html', {"bets":bets})
+    return render(request, 'main/bets.html', {"bets":bets, "logo":False})
 
 
 

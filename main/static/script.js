@@ -172,7 +172,7 @@ async function pasteContent(element) {
         sib.classList.add('hidden')
         navigator.clipboard.readText().then(
             clipText => input.value = clipText);
-        
+
         console.log('Text pasted.');
     } catch (error) {
         console.log('Failed to read clipboard');
@@ -241,7 +241,6 @@ async function checkTrx() {
                 hideAfter: 5000,
                 icon: 'success'
             })
-            console.log(resp['value'])
             updateBalances(resp['value'])
         }
         else {
@@ -257,7 +256,6 @@ async function checkTrx() {
 
     }
     catch (error) {
-        console.log(error)
         $.toast({
             heading: 'Info!',
             text: 'transaction has not reflected,please wait before trying again',
@@ -281,15 +279,36 @@ async function fetchWithTimeout(resource, options = {}) {
 
 
 
-function hideSpan(element){
+function hideSpan(element) {
     let sib = element.nextElementSibling
     sib.classList.add('hidden')
 }
-function showSpan(element){
+function showSpan(element) {
     let sib = element.nextElementSibling
     sib.classList.remove('hidden')
 }
 
+function hideSearch() {
+    search = document.getElementById('search-input')
+    search.classList.add('hidden')
+    search.children[0].value = ''
+}
+function showSearch() {
+    search = document.getElementById('search-input')
+    search.classList.remove('hidden')
+    search.children[0].focus()
+}
+
+function toggleInstructions() {
+    let inst = document.getElementById('instructions')
+    inst.classList.remove('hidden')
+    function sleep(time) {
+        return new Promise((resolve) => setTimeout(resolve, time));
+    }
+    sleep(5000).then(() => {
+        inst.classList.add('hidden')
+    });
+}
 
 
 
