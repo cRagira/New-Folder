@@ -100,6 +100,12 @@ function removeMatch(element) {
 function makeActive(id) {
     $element = $(id)
     $navs = $('.nav')
+    search=document.getElementsByClassName('sx')
+    search[0].classList.add('hidden')
+    search[1].classList.add('hidden')
+    if (id=='#games') {
+        search[0].classList.remove('hidden')
+    }
     $navs.each(function () {
         if ($(this).attr('id') != $element.attr('id')) {
             $(this).addClass('hidden')
@@ -135,7 +141,20 @@ function showLess(element) {
     down = document.getElementsByClassName('down')[0]
     down.classList.toggle('hidden')
 }
+function copyLink(){
+    link=document.getElementsByClassName('link')[0].innerText
+    navigator.clipboard.writeText(link).then(() => {
+        $.toast({
+            heading: 'Success!',
+            text: 'Copied to clipboad',
+            showHideTransition: 'slide',
+            position: 'top-right',
+            hideAfter: 5000,
+            icon: 'success'
+        })
+    })
 
+}
 function copyContent() {
     let copyText = document.getElementById('dep-address');
     copyText.focus();
@@ -292,6 +311,10 @@ function hideSearch() {
     search = document.getElementById('search-input')
     search.classList.add('hidden')
     search.children[0].value = ''
+    // var all = document.getElementsByClassName('container')
+    for (let index = 0; index < all.length; index++) {
+        all[index].classList.remove('hidden');
+    }
 }
 function showSearch() {
     search = document.getElementById('search-input')

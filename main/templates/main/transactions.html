@@ -3,6 +3,7 @@
 <p>My Transactions</p>
 {%endblock%}
 {% block content %}
+<div class="detail-container">
 {% for transaction in transactions%}
 {% if transaction.type == 'with' or transaction.type == 'depo' %}
 <div class="transaction">
@@ -12,5 +13,5 @@
 </div>
 {%endif%}
 {%endfor%}
-
+</div>
 {% endblock content %}

@@ -1,15 +1,17 @@
 {% extends 'main/base.html' %}
+{% load djmoney %}
 {% load static %}
 {%block page%}
 <p>My Transactions</p>
 {%endblock%}
 {% block content %}
+<div class="detail-container">
 {% for bet in bets %}
 <div class="bet">
     <div class="info">#{{bet.id}} <p>Amount: {{bet.stake_amount}}</p>
     </div>
     <div class="info"><span>{{bet.created_at|date:"M d, h:i a"}}</span>
-        <p> To win: {{bet.prize}}</p>
+        <p> To win: {{bet.local}}</p>
     </div>
     <div class="info">
         {% if bet.is_won %}
@@ -61,4 +63,5 @@
     </div>
 </div>
     {%endfor%}
+</div>
     {% endblock content %}

@@ -31,13 +31,13 @@
             {%block page%}
             {%endblock%}
             {% if logo %}
-            <i class="fa-solid fa-magnifying-glass" onclick="showSearch()"></i>
+            <i class="fa-solid fa-magnifying-glass sx" onclick="showSearch()"></i>
             {% else %}
             <i class="fa-solid fa-magnifying-glass" style="visibility: hidden;"></i>
 
             {%endif%}
         </div>
-        <div class="search-input hidden" id="search-input">
+        <div class="search-input sx hidden" id="search-input">
             <input type="text" id="search">
             <i class="fa-solid fa-xmark" onclick="hideSearch()"></i>
         </div>
@@ -73,7 +73,7 @@
         }
         var trigram = TrigramIndex(input);
         var searchElem = document.getElementById("search");
-        searchElem.onkeyup = function () {
+        searchElem.oninput = function () {
             var all = document.getElementsByClassName('container')
             for (let index = 0; index < all.length; index++) {
                 all[index].classList.remove('hidden');
@@ -90,7 +90,7 @@
             for (var i in result) {
                 results += 1;
                 if (result[i].matches != currentMatch) {
-                    if (results > 5 || (results > 3 && result[i].matches <= 2)) break;
+                    if (results > 5 || (results > 3 && result[i].matches <= 3)) break;
                     currentMatch = result[i].matches;
                 }
                 hits.push(result[i].phrase);

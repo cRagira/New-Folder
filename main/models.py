@@ -4,14 +4,21 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 import uuid
+import requests
 from djmoney.models.fields import MoneyField
 from djmoney.money import Money
 from django_countries.fields import CountryField
 import pycountry
 from djmoney.contrib.exchange.models import convert_money
 from babel.numbers import get_territory_currencies
+import os
+import sys
+from dotenv import load_dotenv,find_dotenv
+load_dotenv(find_dotenv(sys.path[0]+'/main/.env'))
 
-ref_value=Money(50, 'KES')
+API_TOKEN=os.environ.get('API_TOKEN')
+
+ref_value=Money(.2, 'WLD')
 def get_currency(code):
     currency = get_territory_currencies(code)[0]
     return currency
@@ -53,6 +60,7 @@ class Profile(models.Model):
     redeem=models.IntegerField(default=0)
     image=models.ImageField(blank=True, upload_to='uploads/dp/',null=True, default='default.png')
     address=models.CharField(max_length=256, blank=True, null=True)
+    chat_id=models.CharField(max_length=200)
 
     def get_balance(self):
         balance= convert_money(self.balance,self.user_currency())
@@ -69,11 +77,15 @@ class Profile(models.Model):
 
         transaction=Transaction.objects.create(user=self.user,type='cred',amount=cred)
         transaction.save()
+        bank=User.objects.get(username='bank')
+        bank.profile.balance-=cred
     def debit(self,amount):
         self.balance-=Money(amount,'WLD')
         self.save()
         transaction=Transaction.objects.create(user=self.user,type='debi',amount=Money(amount,'WLD'))
         transaction.save()
+        bank=User.objects.get(username='bank')
+        bank.profile.balance-=Money(amount,'WLD')
 
 
     def deposit(self,amount):
@@ -85,6 +97,8 @@ class Profile(models.Model):
         self.save()
         transaction=Transaction.objects.create(user=self.user,type='depo',amount=depo)
         transaction.save()
+        bank=User.objects.get(username='bank')
+        bank.profile.balance+=Money(amount,'WLD')
 
     def withdraw(self,amount):
         if self.balance>=Money(amount,'WLD'):
@@ -93,6 +107,8 @@ class Profile(models.Model):
             transaction=Transaction.objects.create(user=self.user,type='with',amount=Money(amount,'WLD'))
             #TODO trx hash
             transaction.save()
+            bank=User.objects.get(username='bank')
+            bank.profile.balance-=Money(amount,'WLD')
         else:
             raise ValueError('Insufficient balance')
 
@@ -165,13 +181,17 @@ class BetTicket(models.Model):
     stake_amount = models.DecimalField(max_digits=8, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
     total_odds = models.DecimalField(max_digits=10, decimal_places=2)
-    prize = models.DecimalField(max_digits=10, decimal_places=2)
+    prize=MoneyField(max_digits=14, decimal_places=2, default_currency='WLD', default=Money(0,'WLD'))
     is_won = models.BooleanField(default=False)
     is_settled = models.BooleanField(default=False)
 
 
     class Meta:
         ordering = ['-created_at']
+
+    @property
+    def local(self):
+        return convert_money(self.prize,self.user.profile.user_currency())
 
 
     
@@ -182,8 +202,9 @@ class BetTicket(models.Model):
                 #TODO pay
                 selections=self.sselections.all()
                 if all(selection.is_correct() for selection in selections):
-                    print(f"currentbalance{self.user.profile.balance}")
-                    self.user.profile.credit(self.prize)
+                    self.user.profile.credit(self.prize.amount)
+                    url=f"https://api.telegram.org/bot{API_TOKEN}/sendMessage"
+                    res=requests.get(url,params={"chat_id":self.user.profile.chat_id,"text":f"Congratulations, you have won {self.local} for bet {self.id}"})
                     print(f'paid {self.prize} to {self.user} for {self}')
                 self.is_settled = True
                 

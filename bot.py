@@ -40,6 +40,8 @@ wldAddress = "0xbc0367e2fd8885ccfbb1032f3ceb7905378e8e5e"
 
 API_TOKEN = os.environ.get("API_TOKEN")
 bot = telebot.TeleBot(API_TOKEN)
+def alert(id,message):
+    bot.send_message(id, message)
 
 
 def landing(message):
@@ -187,7 +189,6 @@ def echo(message):
                 url = reverse(
                     "main:withdraw", kwargs={"user_id": user.id, "amount": amount}
                 )
-                print(url)
                 message = f"{user.profile.address},\n \n \n \n {url}"
 
                 smtp_server = "smtp.gmail.com"
@@ -250,7 +251,6 @@ def echo(message):
         num = int(message.text)
         if num > 4 and num <= (val.count() - user.profile.redeem):
             user.profile.redeem += num
-            currency = get_territory_currencies(user.profile.country.code)[0]
             cred = Money(0.2 * num, "WLD")
             user.profile.credit(cred.amount)
             user.save()
@@ -300,6 +300,7 @@ def get_number(message):
         
         country = pycountry.countries.search_fuzzy(geocoder.description_for_number(pn, "en"))
         user.profile.country=country[0].alpha_3
+        user.profile.chat_id=message.chat.id
         user.save()
     markup=types.ReplyKeyboardRemove()
     message = bot.send_message(message.chat.id, f"Welcome to Telebets {user.username}!", reply_markup=markup)

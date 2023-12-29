@@ -10,5 +10,6 @@ urlpatterns = [
     path('login/', views.loginview, name='login'),
     path('trx/',views.trx,name='trx'),
     path('country/',views.country, name='country'),
+    path('referrals/',views.referrals, name='referrals'),
     path('withdraw/<str:user_id>/<str:amount>/',views.withdraw, name='withdraw'),
     ]

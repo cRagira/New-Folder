@@ -84,12 +84,16 @@
     </div>
     <div class="balances space-btn">
         <div class="main-balance center"><i class="fa-solid fa-wallet"></i>
-            <div class="column"><span>Balance</span><p>WLD {{user.profile.balance.amount | floatformat:2}}</p> <span
-                    class="small">{{user.profile.user_currency}} {{user.profile.get_balance}}</span></div>
+            <div class="column"><span>Balance</span>
+                <p>WLD {{user.profile.balance.amount | floatformat:2}}</p> <span
+                    class="small">{{user.profile.user_currency}} {{user.profile.get_balance}}</span>
+            </div>
         </div>
-        <div class="referral-balance center"><i class="fa-solid fa-people-group"></i>
-            <div class="column"><span>Referral balance</span>{{user.profile.unredeemed_refs}}</div>
-        </div>
+        <a href="/referrals">
+            <div class="referral-balance center"><i class="fa-solid fa-people-group"></i>
+                <div class="column"><span>Referral balance</span>{{user.profile.unredeemed_refs}}</div>
+            </div>
+        </a>
     </div>
     <div class="transact">
         <div class="deposit transact-content">
@@ -106,14 +110,16 @@
                     </div>
                     <div class="hidden" id="trx">
                         <div class="wrapper">
-                            <input type="text" name="trxcode" id="trxcode" onfocus="hideSpan(this)" onfocusout="showSpan(this)">
+                            <input type="text" name="trxcode" id="trxcode" onfocus="hideSpan(this)"
+                                onfocusout="showSpan(this)">
                             <span class="hash">enter transaction hash</span>
                             <div class="copy" onclick="pasteContent(this)">
                                 <i class="fa-solid fa-clipboard"></i> PASTE
                             </div>
                         </div>
                         <div>
-                            <p class="small tut" onclick="toggleInstructions()"><i class="fa-regular fa-circle-question"></i>How to find hash</p>
+                            <p class="small tut" onclick="toggleInstructions()"><i
+                                    class="fa-regular fa-circle-question"></i>How to find hash</p>
                             <div class="instructions hidden" id="instructions">
                                 <ul>
                                     <li>Open the WorldApp</li>
@@ -138,7 +144,8 @@
             <form action="{% url 'main:trx' %}" method="post">
                 {%csrf_token%}
                 <div class="wrapper">
-                    <input type="text" name="user-address" id="user-address"  onfocus="hideSpan(this)" onfocusout="showSpan(this)">
+                    <input type="text" name="user-address" id="user-address" onfocus="hideSpan(this)"
+                        onfocusout="showSpan(this)">
                     <span class="enter-address">enter worldcoin address</span>
                     <div class="copy" onclick="pasteContent(this)">
                         <i class="fa-solid fa-clipboard"></i> PASTE

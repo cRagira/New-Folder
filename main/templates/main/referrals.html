@@ -1,0 +1,55 @@
+{%extends 'main/base.html'%}
+
+{%block page%}
+<p>My Referrals</p>
+{%endblock%}
+{% block content %}
+<div class="detail-container">
+    <div class="balances referrals">
+        <div class="total center column">
+            <i class="fa-solid fa-people-group" aria-hidden="true"></i>
+            <p>Total referrals:</p>
+            <p class="bold"> {{ref.count}}</p>
+        </div>
+        <div class="valid center column">
+            <i class="fa-solid fa-handshake-simple"></i>
+            <p>Valid referrals:</p>
+            <p class="bold"> {{val.count}}</p>
+        </div>
+        <div class="redeemed center column">
+            <i class="fa-solid fa-hand-holding-dollar"></i>
+            <p>Redeemed:</p>
+            <p class="bold"> {{user.profile.redeem}}</p>
+        </div>
+        <div class="available center column">
+            <i class="fa-solid fa-landmark"></i>
+            <p>Available for redemption:</p>
+            <p class="bold">{{avail}} ≈ {{user.profile.unredeemed_refs}}</p>
+        </div>
+    </div>
+    <div class="share-link">
+        <p>Share link: </p>
+        <div class="wrapper">
+            <span class="link">https://t.me/surebet_bot?start={{user.profile.referral_id}}</span>
+            <div class="copy" onclick="copyLink()">
+                <i class="fa-solid fa-copy" aria-hidden="true"></i> COPY
+            </div>
+        </div>
+    </div>
+    <div class="redeem column">
+        <p>Redeem</p>
+        <span>Minimum redemption: 5</span>
+        <span>Redemption value: 0.2 WLD/ref</span>
+        <form action="/referrals/" method="post">
+            {%csrf_token%}
+            <div class="wrapper">
+                <input type="number" step="1" name="redeem-amount" id="redeem-amount" oninput="toggleDisable(this)">
+                <div class="placeholder" style="font-size: .8rem;">Amount (max: {{avail}})</div>
+            </div>
+            <button type="submit">Redeem</button>
+        </form>
+
+    </div>
+
+</div>
+{% endblock content %}

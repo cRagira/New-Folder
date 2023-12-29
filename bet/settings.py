@@ -29,7 +29,7 @@ DATABASE_URL=os.environ.get('DB_URL')
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'djmoney',
     'django_countries',
     'djmoney.contrib.exchange',
+    
 ]
 
 MIDDLEWARE = [
@@ -91,7 +92,10 @@ DATABASES = {
     'default':dj_database_url.config(default=DATABASE_URL, conn_max_age=5000),
 }
 
-CSRF_TRUSTED_ORIGINS=[]
+CSRF_TRUSTED_ORIGINS=[
+    "https://new-folder-production.up.railway.app",
+    "https://web.telegram.org"
+]
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -148,6 +152,3 @@ WLD=moneyed.add_currency(
     name='worldcoin'
 )
 
-CSRF_TRUSTED_ORIGINS = [
-    "https://new-folder-production.up.railway.app",
-]
