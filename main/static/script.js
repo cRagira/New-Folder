@@ -100,10 +100,10 @@ function removeMatch(element) {
 function makeActive(id) {
     $element = $(id)
     $navs = $('.nav')
-    search=document.getElementsByClassName('sx')
+    search = document.getElementsByClassName('sx')
     search[0].classList.add('hidden')
     search[1].classList.add('hidden')
-    if (id=='#games') {
+    if (id == '#games') {
         search[0].classList.remove('hidden')
     }
     $navs.each(function () {
@@ -127,6 +127,16 @@ function toggleDisable(element) {
     }
 }
 
+function disableDeposit(element) {
+    button = element.parentElement.nextElementSibling.children[2]
+    console.log('disabling')
+    if (element.value != '') {
+        button.removeAttribute('disabled')
+    }
+    else {
+        button.setAttribute('disabled', '')
+    }
+}
 
 function showMore(element) {
     bets = element.parentElement.parentElement.nextElementSibling
@@ -141,8 +151,8 @@ function showLess(element) {
     down = document.getElementsByClassName('down')[0]
     down.classList.toggle('hidden')
 }
-function copyLink(){
-    link=document.getElementsByClassName('link')[0].innerText
+function copyLink() {
+    link = document.getElementsByClassName('link')[0].innerText
     navigator.clipboard.writeText(link).then(() => {
         $.toast({
             heading: 'Success!',
@@ -220,7 +230,7 @@ function showAddr(button) {
     button.parentNode.replaceChild(cont, button)
 
     async function show() {
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise(resolve => setTimeout(resolve, 1500));
         addr = document.getElementById('addr');
         addr.classList.remove('hidden');
         cont.classList.add('hidden');
@@ -231,60 +241,111 @@ function showAddr(button) {
 }
 function hideDeposit() {
     form = document.getElementById('deposit-form')
+    console.log('hidedepo')
     form.innerHTML = '<div id="myProgress"><div id="myBar"></div><div class="text">connecting to blockchain</div></div>'
+}
+function showDeposit(){
+    form = document.getElementById('deposit-form')
+    form.innerHTML = `<div class="request">
+        <div class="wrapper addr hidden" id="addr">
+            <span class="address" id="dep-address">0xbc0367e2fd8885ccfbb1032f3ceb7905378e8e5e</span>
+            <div class="copy" onclick="copyContent()">
+                <i class="fa-solid fa-copy"></i> COPY
+            </div>
+        </div>
+        <div class="hidden" id="trx">
+            <div class="wrapper">
+                <input type="text" name="trxcode" id="trxcode" onfocus="hideSpan(this)"
+                    onfocusout="showSpan(this)">
+                <span class="hash">enter transaction hash</span>
+                <div class="copy" onclick="pasteContent(this)">
+                    <i class="fa-solid fa-clipboard"></i> PASTE
+                </div>
+            </div>
+            <div>
+                <p class="small tut" onclick="toggleInstructions()"><i
+                        class="fa-regular fa-circle-question"></i>How to find hash</p>
+                <div class="instructions hidden" id="instructions">
+                    <ul>
+                        <li>Open the WorldApp</li>
+                        <li>Go to Wallet</li>
+                        <li>Click on history icon</li>
+                        <li>Find the transaction</li>
+                        <li>Click on details</li>
+                    </ul>
+                </div>
+                <button type="button" onclick="checkTrx()">Confirm Deposit</button>
+            </div>
+        </div>
+        <button type="button" onclick="showAddr(this)" id="showAddrBtn">request deposit address</button>
+    </div>`
+
 }
 
 async function checkTrx() {
-    let form = document.getElementById('deposit-form')
-    values = form.getElementsByTagName('input')
-    let data = new FormData();
+    let trx = document.getElementById('trxcode')
+    
 
-    for (let index = 0; index < values.length; index++) {
-        data.append(values[index].name, values[index].value)
-    }
-    hideDeposit()
-    try {
-        const response = await fetchWithTimeout("/trx/", {
-            method: "POST",
-            body: data,
-            headers: { "X-CSRFToken": '{{csrf_token}}' },
-            timeout: 35000,
-        });
-        const resp = await response.json();
-        if (await resp['result'] == 1) {
-            $.toast({
-                heading: 'success!',
-                text: 'Deposit successfully',
-                showHideTransition: 'slide',
-                position: 'top-right',
-                hideAfter: 5000,
-                icon: 'success'
+    
+    const timeout = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+    
+    // Run some loop in async function
+    (async () => {
+        hideDeposit()
+        // Loop for 5 times
+        for (let count = 0; count < 5; count++) {
+            // Do some stuff
+            let res = fetch(`/trx?trxcode=${trx.value}`, {
+                Method: 'GET',
+                Cache: 'default'
             })
-            updateBalances(resp['value'])
-        }
-        else {
-            $.toast({
-                heading: 'Error!',
-                text: 'This transaction has been recorded',
-                showHideTransition: 'slide',
-                position: 'top-right',
-                hideAfter: 5000,
-                icon: 'warning'
-            })
-        }
 
-    }
-    catch (error) {
-        $.toast({
-            heading: 'Info!',
-            text: 'transaction has not reflected,please wait before trying again',
-            showHideTransition: 'slide',
-            position: 'top-right',
-            hideAfter: 5000,
-            icon: 'info'
-        })
-    }
-    form.innerHTML = '<form id="deposit-form" action="/transact/" method="post"><input type="hidden" name="csrfmiddlewaretoken" value="vKSI5zOQiJUMgVMmicjL5VGlNHezfgYjq2QJMXmqDLNSXHCyrCM5xqbqB9w8fBMm"><div class="request"><div class="wrapper addr hidden" id="addr"><span class="address">0XAedzrESssGDZS#442Q</span><div class="copy" onclick="copyContent()"><i class="fa-solid fa-copy"></i> COPY</div></div><div class="hidden" id="trx"><div class="wrapper"><input type="text" name="trxcode" id="trxcode"><span class="hash">enter transaction hash</span><div class="copy" onclick="pasteContent()"><i class="fa-solid fa-clipboard"></i> PASTE</div></div><div><p class="small tut"><i class="fa-regular fa-circle-question"></i>How to find hash</p><button type="button" onclick="checkTrx()">Confirm Deposit</button></div></div><button type="button" onclick="showAddr(this)">request deposit address</button></div>'
+            let response = (await res).json()
+
+
+            if (Object.values(await response)[0] == 1) {
+                $.toast({
+                    heading: 'success!',
+                    text: 'Deposit successfully',
+                    showHideTransition: 'slide',
+                    position: 'top-right',
+                    hideAfter: 5000,
+                    icon: 'success'
+                })
+                updateBalances(response['value'])
+                showDeposit()
+                break
+            }
+            else if (Object.values(await response)[0] == -1) {
+                $.toast({
+                    heading: 'Error!',
+                    text: 'This transaction has been recorded',
+                    showHideTransition: 'slide',
+                    position: 'top-right',
+                    hideAfter: 5000,
+                    icon: 'warning'
+                })
+                showDeposit()
+                break
+            }
+
+            else if (Object.values(await response)[0] == 0 && count == 4) {
+                $.toast({
+                    heading: 'Info!',
+                    text: 'transaction has not reflected,please wait before trying again',
+                    showHideTransition: 'slide',
+                    position: 'top-right',
+                    hideAfter: 5000,
+                    icon: 'info'
+                })
+                showDeposit()
+            }
+            // Wait for timeout 1000 ms
+            await timeout(5000 + (count * 1000));
+        }
+    })();
+
+    
 }
 async function fetchWithTimeout(resource, options = {}) {
     const { timeout = 35000 } = options;

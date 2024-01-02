@@ -23,7 +23,7 @@
                     <div class="odds">
                         <div class="odds_select">
                             <label>
-                                <input type="checkbox" class="radioCheck" name="{{match.match_id}}" id="{{match.home}}"
+                                <input type="checkbox" class="radioCheck" name="{{match.match_id}}" id="{{match.match_id}}-{{match.home}}"
                                     value="home" onclick="updateChecked(this)">
                                 <span>{{match.home_odds}}</span>
                             </label>
@@ -31,13 +31,13 @@
                         <div class="odds_select">
                             <label>
                                 <input type="checkbox" class="radioCheck" name="{{match.match_id}}"
-                                    id="{{match.home}}-draw" value="draw" onclick="updateChecked(this)">
+                                    id="{{match.match_id}}-draw" value="draw" onclick="updateChecked(this)">
                                 <span>{{match.draw_odds}}</span>
                             </label>
                         </div>
                         <div class="odds_select">
                             <label>
-                                <input type="checkbox" class="radioCheck" name="{{match.match_id}}" id="{{match.away}}"
+                                <input type="checkbox" class="radioCheck" name="{{match.match_id}}" id="{{match.match_id}}-{{match.away}}"
                                     value="away" onclick="updateChecked(this)">
                                 <span>{{match.away_odds}}</span>
                             </label>
@@ -99,8 +99,7 @@
         <div class="deposit transact-content">
             <p>Deposit</p>
             <span>Deposit funds to your account</span>
-            <form id="deposit-form" action="{% url 'main:trx' %}" method="post">
-                {%csrf_token%}
+            <form id="deposit-form" action="{% url 'main:trx' %}" method="get">
                 <div class="request">
                     <div class="wrapper addr hidden" id="addr">
                         <span class="address" id="dep-address">0xbc0367e2fd8885ccfbb1032f3ceb7905378e8e5e</span>
@@ -111,9 +110,9 @@
                     <div class="hidden" id="trx">
                         <div class="wrapper">
                             <input type="text" name="trxcode" id="trxcode" onfocus="hideSpan(this)"
-                                onfocusout="showSpan(this)">
+                                onfocusout="showSpan(this)" onchange="disableDeposit(this)">
                             <span class="hash">enter transaction hash</span>
-                            <div class="copy" onclick="pasteContent(this)">
+                            <div class="copy" onclick="pasteContent(this); disableDeposit(this);">
                                 <i class="fa-solid fa-clipboard"></i> PASTE
                             </div>
                         </div>
@@ -129,7 +128,7 @@
                                     <li>Click on details</li>
                                 </ul>
                             </div>
-                            <button type="button" onclick="checkTrx()">Confirm Deposit</button>
+                            <button disabled type="button" onclick="checkTrx(this)">Confirm Deposit</button>
                         </div>
                     </div>
                     <button type="button" onclick="showAddr(this)" id="showAddrBtn">request deposit address</button>
