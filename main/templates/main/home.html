@@ -172,7 +172,7 @@
         <div class="settings btn space-btn">
             {% load countries %}
             {% get_countries as countries %}
-            <form method="post" action="/country/">
+            <form method="post" action="/country/" style="width: 100%;">
                 {%csrf_token%}
                 <i class="fa-solid fa-angle-down"></i>
                 {{country_form.as_p}}

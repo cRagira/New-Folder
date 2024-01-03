@@ -59,7 +59,7 @@ function updateBetslip(element) {
         button.setAttribute('disabled', '')
     }
     else {
-        amountEl.style.color = 'black'
+        amountEl.style.color = 'var(--text-color)'
         button.removeAttribute('disabled')
 
     }

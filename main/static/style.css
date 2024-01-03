@@ -5,24 +5,40 @@
     box-sizing: border-box;
 }
 
+
+:root{
+    --primary-color: #fff;
+    --accent-color: #e8e8e8;
+    --secondary-color: gray;
+    --text-color: #000;
+}
+
+.dark{
+    --primary-color: #16202c;
+    --accent-color: #23313d;
+    --secondary-color: gray;
+    --text-color: white
+}
+
+
+body{
+    background-color: var(--tg-theme-bg-color,--primary-color);
+    color: var(--tg-theme-text-color,--text-color);
+}
+a{
+    color: var(--tg-theme-text-color,--text-color);
+}
 .odds_select {
-    background-color: #e8e8e8;
+    background-color: var(--accent-color);
 }
 
 .navbar {
-    background-color: white;
+    background-color: var(--tg-theme-bg-color,--primary-color);
 }
 .navbar i{
     font-size: 1.5rem;
 }
 
-.dark {
-    background-color: #291720;
-}
-
-.dark .odds_select {
-    background-color: grey;
-}
 
 p {
     margin: 2px 0;
@@ -32,7 +48,7 @@ p {
 .time {
     font-size: .7rem;
     align-self: flex-end;
-    color: gray;
+    color: var(--tg-theme-link-color,--secondary-color);
 }
 
 .amount {
@@ -40,11 +56,14 @@ p {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    color: var(--tg-theme-text-color,--text-color);
 }
 
 .container {
     display: flex;
     flex-direction: column;
+    padding: 0 1rem;
+    padding-top: .5rem;
 }
 
 .games {
@@ -100,7 +119,7 @@ p {
     position: fixed;
     left: 0;
     bottom: 0;
-    box-shadow: -7px -7px 12px #e6e6e6,
+    box-shadow: -7px -7px 12px var(--accent-color),
         7px 7px 12px #ffffff;
     width: 100%;
     height: 3rem;
@@ -125,6 +144,7 @@ p {
     align-self: center;
     justify-self: center;
     font-style: normal;
+    font-size: 1rem;
 }
 
 .betslip-icon .odds {
@@ -167,7 +187,7 @@ p {
 
 .team-details span {
     font-size: .8rem;
-    color: gray;
+    color: var(--tg-theme-link-color,--secondary-color);
     padding-top: 5px;
 }
 
@@ -182,7 +202,7 @@ p {
 }
 
 .inline span {
-    color: gray;
+    color: var(--tg-theme-link-color,--secondary-color);
 }
 
 .bet-amount {
@@ -190,6 +210,7 @@ p {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    padding: 0 1rem;
 }
 
 .bet-amount input {
@@ -203,7 +224,7 @@ p {
     font-weight: bold;
 }
 .bet-amount input[type=number] {
-    background-color: #e8e8e8;
+    background-color: var(--accent-color);
     text-align: right;
     padding-right: 1rem;
 }
@@ -216,8 +237,11 @@ button {
     width: 100%;
     border: none;
     border-radius: 5px;
+    color: var(--tg-theme-text-color,--text-color);
 }
-
+.fa-xmark{
+    color: var(--tg-theme-bg-color,--primary-color);
+}
 .slip-content {
     display: flex;
     width: 100%;
@@ -263,8 +287,8 @@ button {
 
 .instructions {
     position: absolute;
-    background-color: #e6e6e6;
-    border: 1px solid #e8e8e8;
+    background-color: var(--accent-color);
+    border: 1px solid var(--tg-theme-link-color,--secondary-color);
     padding: 0.5rem 1.5rem 0.5rem 0.5rem;
     z-index: 10;
     left: 10%;
@@ -326,7 +350,7 @@ button {
 .transaction,
 .share-link {
     margin: 1rem;
-    border: 1px solid #e6e6e6;
+    border: 1px solid var(--accent-color);
     padding: 1rem;
     border-radius: 5px
 }
@@ -350,7 +374,7 @@ button {
 
 .transact-content, .redeem{
     margin: 1rem;
-    border: 1px solid #e6e6e6;
+    border: 1px solid var(--accent-color);
     padding: 1rem;
     border-radius: 5px
 }
@@ -366,7 +390,7 @@ button {
 .transact-content input[type=number],
 .wrapper input[type=text],
 .redeem input {
-    background-color: #e8e8e8;
+    background-color: var(--accent-color);
     text-align: right;
     padding-right: 1rem;
 }
@@ -381,7 +405,7 @@ button {
 .transact-content span,
 .redeem span {
     margin: 0 1rem;
-    color: gray;
+    color: var(--tg-theme-link-color,--secondary-color);
 }
 .redeem{
 
@@ -394,8 +418,8 @@ button {
 
 .btn a {
     text-decoration: none;
-    color: #291720;
-    background-color: #e8e8e8;
+    color: var(--tg-theme-text-color,--text-color);
+    background-color: var(--accent-color);
     margin: 1rem;
     padding: 1rem;
     border-radius: 5px;
@@ -429,7 +453,7 @@ selections {
 
 .addr,
 .link {
-    background-color: #e8e8e8;
+    background-color: var(--accent-color);
     padding: 15px 0;
     margin: 5px;
     width: 100%;
@@ -462,6 +486,7 @@ selections {
     font-size: .6rem;
     font-weight: bold;
     text-align: left;
+    color: var(--tg-theme-link-color,--secondary-color);
 }
 
 .hash,
@@ -479,7 +504,7 @@ selections {
 
 .small {
     font-size: .8rem;
-    color: gray;
+    color: var(--tg-theme-link-color,--secondary-color);
 }
 
 .tut {
@@ -504,11 +529,11 @@ selections {
 
 
 i {
-    color: #291720;
+    color: var(--tg-theme-text-color,--text-color);
 }
 
 .bet {
-    border: 1px solid #e6e6e6;
+    border: 1px solid var(--accent-color);
     border-radius: 5px;
     margin: 1rem;
     padding: 1rem;
@@ -540,13 +565,13 @@ hr {
     display: block;
     height: 1px;
     border: 0;
-    border-top: 1px solid #e8e8e8;
+    border-top: 1px solid var(--accent-color);
     margin: 1em 0;
     padding: 0;
 }
 
 .pick {
-    color: gray;
+    color: var(--tg-theme-link-color,--secondary-color);
 }
 
 .scores {
@@ -639,11 +664,11 @@ hr {
 select {
     appearance: none;
     outline: 0;
-    background: #e6e6e6;
+    background: var(--accent-color);
     background-image: none;
     width: 100%;
     height: 100%;
-    color: black;
+    color: var(--tg-theme-text-color,--text-color);
     cursor: pointer;
     border-radius: 5px;
 }
