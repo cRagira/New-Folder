@@ -14,7 +14,7 @@
 
 .dark {
   --primary-color: #16202c;
-  --accent-color: #23313d;
+  /* --accent-color: #23313d; */
   --secondary-color: gray;
   --text-color: white;
 }
@@ -27,7 +27,7 @@ a {
   color: var(--tg-theme-text-color, --text-color);
 }
 .odds_select {
-  background-color: var(--tg-theme-hint-color, --accent-color);
+  background-color: var(--accent-color);
 }
 
 .navbar {

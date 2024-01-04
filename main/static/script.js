@@ -16,8 +16,6 @@ function setThemeClass() {
   document.documentElement.style.cssText =
     "--accent-color:" + Telegram.WebApp.ThemeParams.hint_color;
   document.documentElement.style.cssText =
-    "--secondary-color:" + Telegram.WebApp.ThemeParams.secondary_bg_color;
-  document.documentElement.style.cssText =
     "--text-color:" + Telegram.WebApp.ThemeParams.text_color;
   console.log("setting");
 }
