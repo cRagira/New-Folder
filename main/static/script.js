@@ -11,13 +11,7 @@ t.children[3].click();
 
 function setThemeClass() {
   document.documentElement.className = Telegram.WebApp.colorScheme;
-  document.documentElement.style.cssText =
-    "--primary-color:" + Telegram.WebApp.ThemeParams.bg_color;
-  document.documentElement.style.cssText =
-    "--accent-color:" + Telegram.WebApp.ThemeParams.hint_color;
-  document.documentElement.style.cssText =
-    "--text-color:" + Telegram.WebApp.ThemeParams.text_color;
-  console.log("setting");
+  
 }
 
 Telegram.WebApp.onEvent("themeChanged", setThemeClass);
