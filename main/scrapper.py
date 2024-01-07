@@ -11,7 +11,7 @@ from django.db.models.functions import Now
 import datetime
 from selenium.webdriver.chrome.service import Service
 import json
-from .models import BetTicket, Match
+from .models import BetTicket, Match, Worldcoin
 from djmoney.contrib.exchange.backends import FixerBackend
 from webdriver_manager.chrome import ChromeDriverManager
 from djmoney.contrib.exchange.models import ExchangeBackend, Rate
@@ -38,13 +38,14 @@ def fetch_matches():
             FixerBackend().update_rates()
             usd=Rate.objects.filter(currency='USD')[0].value
             Rate.objects.create(currency='WLD', value=1/(value/usd), backend=backend)
+            Worldcoin.objects.all()[0].value=1/(value/usd)
         else:
-            prev=Rate.objects.filter(currency='WLD')[0].value
+            prev=Worldcoin.objects.all()[0].value
             FixerBackend().update_rates()
             Rate.objects.create(currency='WLD', value=prev, backend=backend)
     except Exception as e:
         print(e)
-        prev=Rate.objects.filter(currency='WLD')[0].value
+        prev=Worldcoin.objects.all()[0].value
         FixerBackend().update_rates()
         Rate.objects.create(currency='WLD', value=prev, backend=backend)
 

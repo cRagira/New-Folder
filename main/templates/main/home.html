@@ -70,7 +70,7 @@
                         oninput="updateBetslip(this)">
                     <div class="placeholder">Amount</div>
                 </div>
-                <button id="submitBtn" disabled type="submit">place bet</button>
+                <button id="submitBtn" disabled type="submit" onclick="load(this)">place bet</button>
             </div>
         </div>
 
@@ -155,7 +155,7 @@
                         oninput="toggleDisable(this)">
                     <div class="placeholder">Amount(WLD)</div>
                 </div>
-                <button disabled type="submit">withdraw</button>
+                <button disabled type="submit" onclick="load(this)">withdraw</button>
             </form>
         </div>
         <div class="mybets btn">
@@ -176,7 +176,7 @@
                 {%csrf_token%}
                 <i class="fa-solid fa-angle-down"></i>
                 {{country_form.as_p}}
-                <button type="submit">Update</button>
+                <button type="submit" onclick="load(this)">Update</button>
             </form>
         </div>
     </div>

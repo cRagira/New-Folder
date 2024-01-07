@@ -86,13 +86,13 @@ function updateChecked(element) {
     // the checked state of the group/box on the other hand will change
     // and the current value is retrieved using .prop() method
     $(group).prop("checked", false);
-    $(group).parent().parent().css("background-color", "#e8e8e8");
+    $(group).parent().parent().css("background-color", "var(--accent-color)");
 
     $box.prop("checked", true);
     $box.parent().parent().css("background-color", "#04A777");
   } else {
     $box.prop("checked", false);
-    $box.parent().parent().css("background-color", "#e8e8e8");
+    $box.parent().parent().css("background-color", "var(--accent-color)");
   }
   updateBetslip();
 }
@@ -104,7 +104,7 @@ function removeMatch(element) {
   match.forEach((choice) => {
     choice.checked = false;
     if (choice.value == pick) {
-      choice.parentElement.parentElement.style.backgroundColor = "#e8e8e8";
+      choice.parentElement.parentElement.style.backgroundColor = "var(--accent-color)";
     }
   });
   updateBetslip();
@@ -255,7 +255,6 @@ function showAddr(button) {
 }
 function hideDeposit() {
   form = document.getElementById("deposit-form");
-  console.log("hidedepo");
   form.innerHTML =
     '<div id="myProgress"><div id="myBar"></div><div class="text">connecting to blockchain</div></div>';
 }
@@ -398,4 +397,15 @@ function toggleInstructions() {
   sleep(5000).then(() => {
     inst.classList.add("hidden");
   });
+}
+
+function load(elem){
+  elem.form.submit()
+  let cont = document.createElement("div");
+  let bar = document.createElement("div");
+  cont.setAttribute("id", "myProgress");
+  bar.setAttribute("id", "myBar");
+  cont.appendChild(bar);
+  elem.parentNode.replaceChild(cont, elem);
+
 }

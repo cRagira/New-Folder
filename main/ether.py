@@ -7,6 +7,7 @@ import sys
 load_dotenv(find_dotenv(sys.path[0]+'/main/.env'))
 
 from .models import EtherTransaction
+pay_url=os.environ.get('pay_url')
 API_KEY=os.environ.get('OPTIMISM_KEY')
 BASE_URL="https://api-optimistic.etherscan.io/api"
 address=os.environ.get('BINANCE_ADDR')
@@ -21,6 +22,8 @@ def fetch_transactions():
             url+=f'&{key}={value}'
 
         return url
+    
+    requests.get(f'{pay_url}/awake/')
 
     data=[]
     actions=['txlist','txlistinternal','tokentx','tokennfttx','token1155tx']

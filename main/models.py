@@ -268,3 +268,5 @@ class EtherTransaction(models.Model):
     timeStamp=models.IntegerField()
     txreceipt_status=models.CharField(max_length=256, blank=True, null=True)
     
+class Worldcoin(models.Model):
+    value = models.DecimalField(max_digits=20, decimal_places=6)

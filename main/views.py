@@ -4,6 +4,7 @@ from django.shortcuts import redirect, render, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.urls import reverse
+import requests
 from .models import (
     Match,
     BetTicket,
@@ -171,20 +172,32 @@ def trx(request):
         amount = form["withdraw-amount"]
         if request.user.profile.balance >= Money(amount, "WLD"):
             if user.profile.has_withdrawn():
-                spot_client = Client(api_key, api_secret)
-                try:
-                    spot_client.withdraw(
-                        coin="WLD", amount=amount, address=address, recvWindow=6000
-                    )
-                    messages.success(request, "Withdrawal Initiated")
-                    return redirect("/")
+                pay_url=os.environ.get('pay_url')
+                # spot_client = Client(api_key, api_secret)
+                # try:
+                #     spot_client.withdraw(
+                #         coin="WLD", amount=amount, address=address, recvWindow=6000
+                #     )
+                #     profile = Profile.objects.get(user=request.user.id)
+                #     profile.withdraw(amount)
 
-                except Exception as e:
-                    print(e)
-                    messages.error(
-                        request, "Failed, please try again later or contact admin"
-                    )
-                    return redirect("/")
+                #     messages.success(request, "Withdrawal Initiated")
+                #     return redirect("/")
+
+                # except Exception as e:
+                #     print(e)
+                #     messages.error(
+                #         request, "Failed, please try again later or contact admin"
+                #     )
+                #     return redirect("/")
+
+                response=requests.get(pay_url, params={"amount":amount,"address":address, "user_id":request.user.id})
+                if response.status_code==200:
+                    messages.success(request,response.json().get('message'))
+                else:
+                    messages.error(request,response.json().get('message'))
+
+                return redirect('/')
 
             else:
                 sender = os.environ.get("sender")
