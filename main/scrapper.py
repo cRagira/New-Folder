@@ -25,29 +25,29 @@ load_dotenv(find_dotenv(sys.path[0]+'/main/.env'))
 def fetch_matches():
 
     ###update exchange rates
-    api_key=os.environ.get('API_KEY')
-    api_secret=os.environ.get('API_SECRET')
+    # api_key=os.environ.get('API_KEY')
+    # api_secret=os.environ.get('API_SECRET')
 
-    backend=ExchangeBackend.objects.all().last()
-    spot_client = Client(api_key, api_secret)
-    try:
-        response=spot_client.get_avg_price(symbol='WLDUSDT')
-        print(response)
-        value=decimal.Decimal(response.get('price'))
-        if value:
-            FixerBackend().update_rates()
-            usd=Rate.objects.filter(currency='USD')[0].value
-            Rate.objects.create(currency='WLD', value=1/(value/usd), backend=backend)
-            Worldcoin.objects.all()[0].value=1/(value/usd)
-        else:
-            prev=Worldcoin.objects.all()[0].value
-            FixerBackend().update_rates()
-            Rate.objects.create(currency='WLD', value=prev, backend=backend)
-    except Exception as e:
-        print(e)
-        prev=Worldcoin.objects.all()[0].value
-        FixerBackend().update_rates()
-        Rate.objects.create(currency='WLD', value=prev, backend=backend)
+    # backend=ExchangeBackend.objects.all().last()
+    # spot_client = Client(api_key, api_secret)
+    # try:
+    #     response=spot_client.get_avg_price(symbol='WLDUSDT')
+    #     print(response)
+    #     value=decimal.Decimal(response.get('price'))
+    #     if value:
+    #         FixerBackend().update_rates()
+    #         usd=Rate.objects.filter(currency='USD')[0].value
+    #         Rate.objects.create(currency='WLD', value=1/(value/usd), backend=backend)
+    #         Worldcoin.objects.all()[0].value=1/(value/usd)
+    #     else:
+    #         prev=Worldcoin.objects.all()[0].value
+    #         FixerBackend().update_rates()
+    #         Rate.objects.create(currency='WLD', value=prev, backend=backend)
+    # except Exception as e:
+    #     print(e)
+    #     prev=Worldcoin.objects.all()[0].value
+    #     FixerBackend().update_rates()
+    #     Rate.objects.create(currency='WLD', value=prev, backend=backend)
 
 
 

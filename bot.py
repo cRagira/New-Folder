@@ -50,7 +50,7 @@ def landing(message):
     keyboard.row(
         telebot.types.InlineKeyboardButton(
             "Open App",
-            web_app=types.WebAppInfo("https://new-folder.onrender.com/"),
+            web_app=types.WebAppInfo("https://new-folder-production.up.railway.app/"),
         )
     )
     keyboard.row(
