@@ -50,7 +50,7 @@ def home(request):
             else:
                 has_not_started.append(False)
 
-        if all(has_not_started):
+        if all(has_not_started) and len(has_not_started)>0:
             if request.user.profile.balance > wld:
                 bet = BetTicket.objects.create(
                     user=request.user,

@@ -76,7 +76,9 @@ p {
 .teams {
   width: 40%;
 }
-
+#withdraw-amount{
+  color: var(--text-color);
+}
 .odds {
   display: flex;
   gap: 5%;

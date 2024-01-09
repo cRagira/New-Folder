@@ -58,7 +58,7 @@ function updateBetslip(element) {
 
   payout.innerHTML = currency + " " + winnings.toLocaleString();
 
-  if (checked.length > 0) {
+  if (checked.length > 0 && odds>1) {
     betslipicon.innerHTML = `<div class='odds'><i>${
       checked.length
     }:</i><i> \n ${odds.toFixed(2)}</i></div>`;
